@@ -21,7 +21,7 @@
           th:class="${task.status.getText() == 'Pendiente'} ? 'table-danger' : (${task.status.getText() == 'En Proceso'} ? 'table-warning' : 'table-success')">
         <td th:text="${task.title}">Titulo</td>
         <td th:text="${task.description}">Descripción</td>
-        <td th:text="${task.dueDate}">Fecha de vencimiento</td>
+        <td th:utext="${task.allDay} ? ${task.dueDate} + '<br> Todo el día' : ${task.dueDate} + '<br> ' + ${task.time}">Fecha de vencimiento</td>
         <td th:text="${task.status.getText()}">Estado</td>
         <td><a th:href="@{/delete/{title}(title = ${task.title})}">Borrar</a></td>
       </tr>

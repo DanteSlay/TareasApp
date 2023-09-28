@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @Builder
@@ -21,9 +23,14 @@ public class Task {
 
     private String description;
 
-    @NotNull
+    @NotNull(message = "{dueDate.null}")
     @FutureOrPresent(message = "{dueDate.error}")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate dueDate;
+
+    private LocalTime time;
+
+    private Boolean allDay;
 
     private Status status;
 }

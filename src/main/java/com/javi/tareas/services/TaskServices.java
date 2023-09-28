@@ -22,6 +22,7 @@ public class TaskServices {
                     .title("Tarea 1")
                     .description("Primera Tarea")
                     .dueDate(LocalDate.of(2022, 5, 14))
+                    .allDay(true)
                     .status(Status.PROGRESS)
                     .build()
         );
