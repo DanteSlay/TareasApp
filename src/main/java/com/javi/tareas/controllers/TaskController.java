@@ -4,7 +4,6 @@ import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
 import com.javi.tareas.services.TaskServices;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.TimeZone;
 
 @Slf4j
 @Controller
