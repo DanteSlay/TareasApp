@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
   <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-    <title>Home</title>
+    <title th:text="#{task.titleHome}">Home</title>
 </head>
 <body>
-  <h1 style="text-align: center">Lista de Tareas</h1>
+  <h1 style="text-align: center" th:text="#{task.titleList}">Lista de Tareas</h1>
   <table class="table">
     <thead>
       <tr>
-        <th>Titulo</th>
-        <th>Descripción</th>
-        <th>Vencimiento</th>
-        <th>Estado</th>
+        <th th:text="#{task.form.title}">Titulo</th>
+        <th th:text="#{task.form.description}">Descripción</th>
+        <th th:text="#{task.form.dueDate}">Vencimiento</th>
+        <th th:text="#{task.form.status}">Estado</th>
       </tr>
     </thead>
     <tbody>
@@ -23,16 +23,38 @@
         <td th:text="${task.description}">Descripción</td>
         <td th:utext="${task.allDay} ? ${task.dueDate} + '<br> Todo el día' : ${task.dueDate} + '<br> ' + ${task.time}">Fecha de vencimiento</td>
         <td th:text="${task.status.getText()}">Estado</td>
-        <td><a th:href="@{/delete/{title}(title = ${task.title})}">Borrar</a></td>
+        <td><a th:href="@{/delete/{id}(id = ${task.id})}" th:text="#{task.delete}">Borrar</a></td>
+        <td><a th:href="@{/viewTask/{id}(id = ${task.id})}" th:text="#{task.view}">ver</a></td>
       </tr>
       <tr>
         <td colspan="4" style="text-align: center">
           <a th:href="@{/new}">
-            <button class="btn btn-primary">Nueva Tarea</button>
+            <button class="btn btn-primary" th:text="#{task.index.newTask}">Nueva Tarea</button>
           </a>
         </td>
       </tr>
     </tbody>
   </table>
 </body>
+<footer>
+  <table>
+    <thead>
+      <tr th:colspan="2" th:text="#{task.languages}">Idiomas</tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <a th:href="@{/home?lang=en}">
+            <button class="btn btn-primary" style="color: red" th:text="#{task.btn.en}">Ingles</button>
+          </a>
+        </td>
+        <td>
+          <a th:href="@{/home?lang=es}">
+            <button class="btn btn-primary" style="color: yellow" th:text="#{task.btn.es}">Español</button>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</footer>
 </html>

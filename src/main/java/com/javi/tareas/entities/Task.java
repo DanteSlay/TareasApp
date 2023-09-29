@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -15,22 +14,29 @@ import java.time.LocalTime;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class Task {
+    private static long lastId = 1;
+    private long id;
+
     @NotNull
-    @Size(min=1, max = 50, message = "{Title.error}")
+    @Size(min = 1, max = 50, message = "{Title.error}")
     private String title;
 
     private String description;
 
     @NotNull(message = "{dueDate.null}")
     @FutureOrPresent(message = "{dueDate.error}")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dueDate;
 
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime time;
 
     private Boolean allDay;
 
     private Status status;
+
+    public Task() {
+        this.id = ++lastId;
+    }
 }

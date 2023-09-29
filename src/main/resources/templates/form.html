@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-    <title>Nueva Tarea</title>
+    <title th:text="#{task.titleNewTask}">Nueva Tarea</title>
 </head>
 <body>
   <form method="post" th:action="@{/new}"
@@ -58,4 +58,25 @@
         }
     </script>
 </body>
+<footer>
+    <table>
+        <thead>
+        <tr th:colspan="2" th:text="#{task.languages}">Idiomas</tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <a th:href="@{/new?lang=en}">
+                    <button class="btn btn-primary" style="color: red" th:text="#{task.btn.en}">Ingles</button>
+                </a>
+            </td>
+            <td>
+                <a th:href="@{/new?lang=es}">
+                    <button class="btn btn-primary" style="color: yellow" th:text="#{task.btn.es}">Español</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</footer>
 </html>

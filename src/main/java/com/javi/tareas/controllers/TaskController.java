@@ -29,7 +29,7 @@ public class TaskController {
         return "index";
     }
 
-    @GetMapping("/new")
+    @GetMapping({"/new", "/new?lang=es", "/new?lang=en"})
     public String newTask(Model model) {
         Task task = Task.builder()
                 .dueDate(LocalDate.now())
@@ -39,9 +39,15 @@ public class TaskController {
         return "form";
     }
 
-    @GetMapping("/delete/{title}")
-    public String delete(@PathVariable("title") String title) {
-        service.delete(title);
+    @GetMapping("/viewTask/{id}")
+    public String viewTask(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("taskDt", service.find(id));
+        return "task";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id) {
+        service.delete(id);
         return "redirect:/home";
     }
 

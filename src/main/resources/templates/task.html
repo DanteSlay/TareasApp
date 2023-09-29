@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${taskDt.title}">Title</title>
+</head>
+<body>
+    <h1 th:text="${taskDt.title}">Titulo</h1>
+    <h3 th:text="${taskDt.status.getText()}">Status</h3>
+    <h3 th:text="${taskDt.allDay} ?
+                #{task.form.dueDate} + ' ' + ${taskDt.dueDate} + ' ' + #{task.form.allDay} :
+                #{task.form.dueDate} + ' ' + ${taskDt.dueDate} + ' ' + ${taskDt.time}">Due Date</h3>
+    <h3 th:text="#{task.form.description}">Description</h3>
+    <p th:text="${taskDt.description}">Task</p>
+</body>
+<!--<footer>  No funciona
+    <table>
+        <thead>
+        <tr th:colspan="2" th:text="#{task.languages}">Idiomas</tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <a th:href="@{/view/{id}?lang=en}">
+                    <button class="btn btn-primary" style="color: red" th:text="#{task.btn.en}">Ingles</button>
+                </a>
+            </td>
+            <td>
+                <a th:href="@{/view/{id}(id=${taskDt.id})?lang=es}">
+                    <button class="btn btn-primary" style="color: yellow" th:text="#{task.btn.es}">Español</button>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</footer>-->
+</html>

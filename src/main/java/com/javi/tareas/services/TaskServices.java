@@ -7,46 +7,47 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class TaskServices {
-    private List<Task> repository = new ArrayList<>();
+    private HashMap<Long, Task> repository = new HashMap<>();
 
     @PostConstruct
     public void init() {
-        repository.add(
-            Task.builder()
+            Task t = Task.builder()
+                    .id(1)
                     .title("Tarea 1")
                     .description("Primera Tarea")
                     .dueDate(LocalDate.of(2022, 5, 14))
                     .allDay(true)
                     .status(Status.PROGRESS)
-                    .build()
-        );
+                    .build();
+
+        repository.put(t.getId(), t);
+
     }
 
     public List<Task> findAll() {
-        return repository;
+        return repository.entrySet().stream()
+                .sorted(Comparator.comparingLong(Map.Entry::getKey))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     public Task add(Task t) {
-        repository.add(t);
+        repository.put(t.getId(), t);
         return t;
     }
 
-    public Task find(String title) {
-        return repository.stream()
-                .filter(task -> title.equals(task.getTitle()))
-                .findAny()
-                .orElse(null);
+    public Task find(Long id) {
+        return repository.get(id);
     }
 
-    public void delete(String title) {
-        Task t = find(title);
-        repository.remove(t);
+    public void delete(Long id) {
+        repository.remove(id);
     }
 
 
