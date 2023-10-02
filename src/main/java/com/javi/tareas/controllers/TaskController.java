@@ -3,7 +3,6 @@ package com.javi.tareas.controllers;
 import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
 import com.javi.tareas.services.TaskServices;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +18,11 @@ import java.time.LocalTime;
 @Controller
 public class TaskController {
     @Autowired
-    private TaskServices service;
+    private TaskServices TaskService;
 
-    @GetMapping({"/", "/home"})
+    @GetMapping( "/home")
     public String home(Model model) {
-        model.addAttribute("taskList", service.findAll());
+        model.addAttribute("taskList", TaskService.findAll());
         return "index";
     }
 
@@ -39,13 +38,13 @@ public class TaskController {
 
     @GetMapping("/viewTask/{id}")
     public String viewTask(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("taskDt", service.find(id));
+        model.addAttribute("taskDt", TaskService.find(id));
         return "task";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
-        service.delete(id);
+        TaskService.delete(id);
         return "redirect:/home";
     }
 
@@ -57,7 +56,7 @@ public class TaskController {
         } else {
             if (task.getStatus() == null) task.setStatus(Status.PENDING);
             if (task.getAllDay()) task.setTime(null);
-            service.add(task);
+            TaskService.add(task);
             return "redirect:/home";
         }
     }

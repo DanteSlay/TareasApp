@@ -19,7 +19,7 @@ public class Task {
     private long id;
 
     @NotNull
-    @Size(min = 1, max = 50, message = "{Title.error}")
+    @Size(min =1 ,max = 50, message = "{title.error}")
     private String title;
 
     private String description;

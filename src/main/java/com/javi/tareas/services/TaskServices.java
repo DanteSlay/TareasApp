@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class TaskServices {
-    private HashMap<Long, Task> repository = new HashMap<>();
+    private HashMap<Long, Task> TaskRepository = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -26,28 +26,28 @@ public class TaskServices {
                     .status(Status.PROGRESS)
                     .build();
 
-        repository.put(t.getId(), t);
+        TaskRepository.put(t.getId(), t);
 
     }
 
     public List<Task> findAll() {
-        return repository.entrySet().stream()
+        return TaskRepository.entrySet().stream()
                 .sorted(Comparator.comparingLong(Map.Entry::getKey))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 
     public Task add(Task t) {
-        repository.put(t.getId(), t);
+        TaskRepository.put(t.getId(), t);
         return t;
     }
 
     public Task find(Long id) {
-        return repository.get(id);
+        return TaskRepository.get(id);
     }
 
     public void delete(Long id) {
-        repository.remove(id);
+        TaskRepository.remove(id);
     }
 
 
