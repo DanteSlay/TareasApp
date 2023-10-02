@@ -3,16 +3,14 @@ package com.javi.tareas.controllers;
 import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
 import com.javi.tareas.services.TaskServices;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,7 +27,7 @@ public class TaskController {
         return "index";
     }
 
-    @GetMapping({"/new", "/new?lang=es", "/new?lang=en"})
+    @GetMapping("/new")
     public String newTask(Model model) {
         Task task = Task.builder()
                 .dueDate(LocalDate.now())
