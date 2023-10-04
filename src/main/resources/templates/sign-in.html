@@ -8,15 +8,20 @@
 </head>
 <body>
     <form class="container text-center" method="post"
-            th:action="@{/signIn}">
+            th:action="@{/signIn/submit}"
+            th:object="${userDt}">
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-        <div class="form-floating">
-            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+        <div class="form-floating" th:classappend="${#fields.hasErrors('email')} ? 'has-error'">
+            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" th:field="*{email}">
             <label for="email">Email address</label>
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                  class="help-block" style="color: red" id="email-error"></span>
         </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+        <div class="form-floating" th:classappend="${#fields.hasErrors('password')} ? 'has-error'">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" th:field="*{password}">
             <label for="password">Password</label>
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                  class="help-block" style="color: red" id="password-error"></span>
         </div>
         <div class="row">
             <div class="col d-flex justify-content-center">
@@ -26,12 +31,15 @@
                 <div class="d-flex align-items-center justify-content-center pb-4">
                     <p class="mb-0 me-2">Don't have an account?</p>
                     <button type="button" class="btn btn-outline-danger">
-                        <a th:href="@{/newUser}">Create new</a>
+                        <a th:href="@{/newUser}" style="text-decoration: none; color: inherit;">
+                            Create new
+                        </a>
                     </button>
                 </div>
             </div>
         </div>
         <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
     </form>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" ></script>
 </body>
 </html>

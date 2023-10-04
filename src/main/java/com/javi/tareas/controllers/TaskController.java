@@ -48,7 +48,7 @@ public class TaskController {
         return "redirect:/home";
     }
 
-    @PostMapping("/new")
+    @PostMapping("/new/submit")
     public String newTask(@Valid @ModelAttribute("taskDt") Task task,
                           BindingResult result) {
         if (result.hasErrors()) {

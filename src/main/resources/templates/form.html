@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-    <title th:text="#{task.titleNewTask}">Nueva Tarea</title>
+    <title th:text="#{task.title.NewTask}">Nueva Tarea</title>
 </head>
 <body class="container text-center">
-  <form method="post" th:action="@{/new}"
+  <form method="post" th:action="@{/new/submit}"
                         th:object="${taskDt}">
-    <div class="mb-3 d-inline-flex p-2"
-            th:classappend="${#fields.hasErrors('title')} ? 'has-error'">
+    <div class="mb-3 d-inline-flex p-2">
         <label for="title" class="form-label d-inline-flex p-2" th:text="#{task.form.title}">Titulo</label>
-        <input type="text" class="form-control d-inline-flex p-2" id="title" placeholder="Tarea..." th:field="*{title}" th:required="#{title.error}">
-        <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
-              class="help-block" style="color: red" id="title-error">Errores</span>
+        <input type="text" class="form-control d-inline-flex p-2" id="title" placeholder="Tarea..." th:field="*{title}"
+               th:class="${#fields.hasErrors('title')} ? 'is-invalid' : ''">
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
     </div>
     <div class="mb-3">
         <label for="description" class="form-label" th:text="#{task.form.description}">Descripción</label>
@@ -80,4 +79,5 @@
         </tbody>
     </table>
 </footer>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" ></script>
 </html>

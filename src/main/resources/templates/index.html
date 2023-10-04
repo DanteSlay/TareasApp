@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
   <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-    <title th:text="#{task.titleHome}">Home</title>
+    <title th:text="#{task.title.Home}">Home</title>
 </head>
 <body class="container text-center">
-  <h1 style="text-align: center" th:text="#{task.titleList}">Lista de Tareas</h1>
+  <h1 style="text-align: center" th:text="#{task.title.List}">Lista de Tareas</h1>
   <table class="table">
     <thead>
       <tr>
@@ -57,4 +57,5 @@
     </tbody>
   </table>
 </footer>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </html>
