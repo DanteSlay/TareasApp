@@ -1,5 +1,6 @@
 package com.javi.tareas.entities;
 
+import com.javi.tareas.services.TaskServices;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +20,6 @@ public class User {
 
     @Size(min = 8, max = 20)
     private String password;
+
+    private TaskServices taskList;
 }

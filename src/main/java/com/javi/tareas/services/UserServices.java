@@ -34,9 +34,16 @@ public class UserServices {
         return userRepository.get(email) != null;
     }
 
-    public boolean passwordCorrect(User u) {
-        String passwordFound = userRepository.get(u.getEmail()).getPassword();
-        return passwordFound.equals(u.getPassword());
+    public boolean passwordCorrect(User user, String password) {
+        return user.getPassword().equals(password);
+    }
+
+    public boolean authenticationFail(String email, String password) {
+        if (emailExist(email)) {
+            User user = get(email);
+            return !passwordCorrect(user, password);
+        }
+        return true;
     }
 
     public boolean usernameExist(String username) {
