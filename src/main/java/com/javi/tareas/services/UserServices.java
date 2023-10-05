@@ -4,8 +4,11 @@ import com.javi.tareas.entities.User;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServices {
@@ -14,6 +17,7 @@ public class UserServices {
     @PostConstruct
     public void init() {
         User u = User.builder()
+                .id(1)
                 .username("admin")
                 .email("admin@gmail.com")
                 .password("root1234")
@@ -26,7 +30,7 @@ public class UserServices {
     }
 
     public User add(User newUser) {
-        userRepository.put(newUser.getEmail(), newUser);
+        userRepository.put(newUser.getEmail(), newUser.generateId(newUser));
         return newUser;
     }
 
@@ -65,6 +69,10 @@ public class UserServices {
         if (emailExist(newUser.getEmail())) errors.put("email", "user.emailExist.error");
 
         return errors;
+    }
+
+    public List<User> findAll() {
+        return new ArrayList<>(userRepository.values());
     }
 
 }

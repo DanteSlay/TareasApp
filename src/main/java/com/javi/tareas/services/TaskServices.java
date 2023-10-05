@@ -24,14 +24,16 @@ public class TaskServices {
                     .dueDate(LocalDate.of(2022, 5, 14))
                     .allDay(true)
                     .status(Status.PROGRESS)
+                    .idUser(1)
                     .build();
 
         TaskRepository.put(t.getId(), t);
 
     }
 
-    public List<Task> findAll() {
+    public List<Task> findAll(Long idUsuario) {
         return TaskRepository.entrySet().stream()
+                .filter(entry -> entry.getValue().getIdUser() == idUsuario)
                 .sorted(Comparator.comparingLong(Map.Entry::getKey))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());

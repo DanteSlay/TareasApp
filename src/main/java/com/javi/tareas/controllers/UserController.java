@@ -46,7 +46,8 @@ public class UserController {
             return "logIn";
         }
 
-        return "redirect:/home/";
+        User user = userService.get(email);
+        return "redirect:/home/" + user.getId();
     }
 
     @PostMapping("/register/submit")
@@ -63,6 +64,6 @@ public class UserController {
         }
 
         userService.add(newUser);
-        return "redirect:/signIn";
+        return "redirect:/logIn";
     }
 }

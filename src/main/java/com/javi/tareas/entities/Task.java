@@ -37,6 +37,8 @@ public class Task {
 
     private Status status;
 
+    private long idUser;
+
     public Task() {
         this.id = ++lastId;
     }

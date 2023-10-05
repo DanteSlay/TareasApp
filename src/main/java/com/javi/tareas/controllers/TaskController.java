@@ -20,9 +20,12 @@ public class TaskController {
     @Autowired
     private TaskServices TaskService;
 
-    @GetMapping( "/home")
-    public String home(Model model) {
-        model.addAttribute("taskList", TaskService.findAll());
+    private Long userId;
+
+    @GetMapping( "/home/{id}")
+    public String home(@PathVariable("id") Long id, Model model) {
+        userId = id;
+        model.addAttribute("taskList", TaskService.findAll(userId));
         return "index";
     }
 
@@ -31,6 +34,7 @@ public class TaskController {
         Task task = Task.builder()
                 .dueDate(LocalDate.now())
                 .time(LocalTime.now())
+                .idUser(userId)
                 .build();
         model.addAttribute("taskDt", task);
         return "form";
@@ -43,9 +47,9 @@ public class TaskController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        TaskService.delete(id);
-        return "redirect:/home";
+    public String delete(@PathVariable("id") Long idTask) {
+        TaskService.delete(idTask);
+        return "redirect:/home" + userId;
     }
 
     @PostMapping("/new/submit")
@@ -56,8 +60,11 @@ public class TaskController {
         } else {
             if (task.getStatus() == null) task.setStatus(Status.PENDING);
             if (task.getAllDay()) task.setTime(null);
+            task.setIdUser(userId);
+
             TaskService.add(task);
-            return "redirect:/home";
+            return "redirect:/home/" + userId;
         }
     }
+
 }

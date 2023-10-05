@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+    private static long lastId = 1;
+
+    private long id;
 
     @NotBlank(message = "{user.nameBlank.error}")
     private String username;
@@ -21,5 +24,12 @@ public class User {
     @Size(min = 8, max = 20)
     private String password;
 
-    private TaskServices taskList;
+/*    public User() {
+        this.id = ++lastId;
+    }*/
+
+    public User generateId(User user) {
+        user.setId(++lastId);
+        return user;
+    }
 }
