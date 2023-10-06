@@ -18,18 +18,18 @@ import java.time.LocalTime;
 @Controller
 public class TaskController {
     @Autowired
-    private TaskServices TaskService;
+    private TaskServices taskService;
 
     private Long userId;
 
     @GetMapping( "/home/{id}")
     public String home(@PathVariable("id") Long id, Model model) {
         userId = id;
-        model.addAttribute("taskList", TaskService.findAll(userId));
+        model.addAttribute("taskList", taskService.findAll(userId));
         return "index";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/newTask")
     public String newTask(Model model) {
         Task task = Task.builder()
                 .dueDate(LocalDate.now())
@@ -42,17 +42,25 @@ public class TaskController {
 
     @GetMapping("/viewTask/{id}")
     public String viewTask(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("taskDt", TaskService.find(id));
+        model.addAttribute("taskDt", taskService.find(id));
         return "task";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long idTask) {
-        TaskService.delete(idTask);
+        taskService.delete(idTask);
         return "redirect:/home" + userId;
     }
 
-    @PostMapping("/new/submit")
+    @GetMapping("/viewTask/edit/{id}")
+    public String edit(@PathVariable("id") Long idTask, Model model) {
+        Task t = taskService.find(idTask);
+        model.addAttribute("taskDt", t);
+        log.info(String.valueOf(t));
+        return "edit-task";
+    }
+
+    @PostMapping("/newTask/submit")
     public String newTask(@Valid @ModelAttribute("taskDt") Task task,
                           BindingResult result) {
         if (result.hasErrors()) {
@@ -62,9 +70,22 @@ public class TaskController {
             if (task.getAllDay()) task.setTime(null);
             task.setIdUser(userId);
 
-            TaskService.add(task);
+            taskService.add(task);
             return "redirect:/home/" + userId;
         }
     }
+        @PostMapping("home/updateStatus/{id}")
+        public String updateTaskStatus(@PathVariable("id") Long taskId, @RequestParam("status") Status newStatus) {
+            taskService.updateStatus(taskId, newStatus);
+            return "redirect:/home/" + userId;
+        }
 
+    @PostMapping("/editTask/submit")
+    public String updateTask(@Valid @ModelAttribute("taskDt") Task editTask, BindingResult result) {
+        log.info(String.valueOf(editTask));
+        if (result.hasErrors()) return "edit-task";
+
+        taskService.updateTask(editTask);
+        return "redirect:/viewTask/" + editTask.getId();
+    }
 }

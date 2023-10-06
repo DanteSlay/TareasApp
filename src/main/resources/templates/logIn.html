@@ -4,36 +4,38 @@
     <meta charset="UTF-8">
     <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Sign In</title>
+    <title th:text="#{user.title.signIn}">Sign In</title>
 </head>
-<body>
-<form class="container text-center" method="post" th:action="@{/logIn/submit}">
-    <h1 class="h3 mb-3 fw-normal">Please log in</h1>
-    <div class="form-floating">
-        <span th:if="${error != null}" th:text="#{user.authenticationFail.error}" style="color: red"></span>
-        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
-        <label for="email">Email address</label>
-    </div>
-    <div class="form-floating">
-        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-        <label for="password">Password</label>
-    </div>
-    <div class="row">
-        <div class="col d-flex justify-content-center">
-            <a th:href="@{/forgotPassword}">Forgot your password?</a>
-        </div>
-        <div class="col">
-            <div class="d-flex align-items-center justify-content-center pb-4">
-                <p class="mb-0 me-2">Don't have an account?</p>
-                <button type="button" class="btn btn-outline-danger">
-                    <a th:href="@{/newUser}" style="text-decoration: none; color: inherit;">Create new</a>
-                </button>
+<body class="d-block" style="margin: 0">
+    <nav th:replace="fragments/navTop::navTop"></nav>
+    <div class="container text-center mb-3">
+        <form method="post" th:action="@{/logIn/submit}">
+            <h1 class="h3 mb-3 fw-normal" th:text="#{user.title.titleLogIn}">Please log in</h1>
+            <div class="form-floating">
+                <span th:if="${error != null}" th:text="#{user.authenticationFail.error}" style="color: red"></span>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                <label for="email" th:text="#{user.title.email}">Email address</label>
             </div>
-        </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                <label for="password" th:text="#{user.title.password}">Password</label>
+            </div>
+            <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <a th:href="@{/forgotPassword}" th:text="#{user.title.forgot}">Forgot your password?</a>
+                </div>
+                <div class="col">
+                    <div class="d-flex align-items-center justify-content-center pb-4">
+                        <p class="mb-0 me-2" th:text="#{user.title.account}">Don't have an account?</p>
+                        <button type="button" class="btn btn-outline-danger">
+                            <a th:href="@{/newUser}" style="text-decoration: none; color: inherit;" th:text="#{user.title.new}">Create new</a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit" th:text="#{user.title.logIn}">Sign in</button>
+        </form>
     </div>
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-</form>
-
 <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" ></script>
 </body>
 </html>

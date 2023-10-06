@@ -39,7 +39,8 @@ public class Task {
 
     private long idUser;
 
-    public Task() {
-        this.id = ++lastId;
+    public Task generateId(Task task) {
+        task.setId(++lastId);
+        return task;
     }
 }

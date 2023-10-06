@@ -2,10 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-  <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet" type="text/css"/>
     <title th:text="#{task.title.Home}">Home</title>
 </head>
-<body class="container text-center">
+<body>
+<nav th:replace="fragments/navTop::navTop"></nav>
+<div class="container text-center">
   <h1 style="text-align: center" th:text="#{task.title.List}">Lista de Tareas</h1>
   <table class="table">
     <thead>
@@ -22,9 +25,27 @@
         <td th:text="${task.title}">Titulo</td>
         <td th:text="${task.description}">Descripción</td>
         <td th:utext="${task.allDay} ? ${task.dueDate} + '<br> Todo el día' : ${task.dueDate} + '<br> ' + ${task.time}">Fecha de vencimiento</td>
-        <td th:text="${task.status.getText()}">Estado</td>
-        <td><a th:href="@{/delete/{id}(id = ${task.id})}" th:text="#{task.delete}">Borrar</a></td>
-        <td><a th:href="@{/viewTask/{id}(id = ${task.id})}" th:text="#{task.view}">ver</a></td>
+        <td>
+          <form method="post" th:action="@{updateStatus/{id}(id = ${task.id})}">
+            <select class="form-select-sm" name="status">
+              <option th:each="status : ${T(com.javi.tareas.entities.Status).values()}"
+                      th:value="${status}" th:text="${status.getText()}"
+                      th:selected="${status == task.status}"></option>
+            </select>
+            <button type="submit" class="btn btn-outline-dark btn-sm">Actualizar</button>
+          </form>
+        </td>
+        <td>
+          <a th:href="@{/delete/{id}(id = ${task.id})}" >
+            <i class="fas fa-solid fa-trash" style="color: #000000;"></i>
+          </a>
+        </td>
+        <td>
+          <a th:href="@{/viewTask/{id}(id = ${task.id})}">
+            <i class="fas fa-solid fa-eye" style="color: #000000;"></i>
+          </a>
+        </td>
+
       </tr>
       <tr>
         <td colspan="4" style="text-align: center">
@@ -35,27 +56,7 @@
       </tr>
     </tbody>
   </table>
+</div>
 </body>
-<footer>
-  <table>
-    <thead>
-      <tr th:colspan="2" th:text="#{task.languages}">Idiomas</tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <a th:href="@{/changeLanguage?lang=en}">
-            <button class="btn btn-primary" style="color: red" th:text="#{task.btn.en}">Ingles</button>
-          </a>
-        </td>
-        <td>
-          <a th:href="@{/changeLanguage?lang=es}">
-            <button class="btn btn-primary" style="color: yellow" th:text="#{task.btn.es}">Español</button>
-          </a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</footer>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </html>

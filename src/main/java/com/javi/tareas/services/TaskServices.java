@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class TaskServices {
-    private HashMap<Long, Task> TaskRepository = new HashMap<>();
+    private HashMap<Long, Task> taskRepository = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -27,12 +27,12 @@ public class TaskServices {
                     .idUser(1)
                     .build();
 
-        TaskRepository.put(t.getId(), t);
+        taskRepository.put(t.getId(), t);
 
     }
 
     public List<Task> findAll(Long idUsuario) {
-        return TaskRepository.entrySet().stream()
+        return taskRepository.entrySet().stream()
                 .filter(entry -> entry.getValue().getIdUser() == idUsuario)
                 .sorted(Comparator.comparingLong(Map.Entry::getKey))
                 .map(Map.Entry::getValue)
@@ -40,19 +40,34 @@ public class TaskServices {
     }
 
     public Task add(Task t) {
-        TaskRepository.put(t.getId(), t);
+        taskRepository.put(t.getId(), t.generateId(t));
         return t;
     }
 
     public Task find(Long id) {
-        return TaskRepository.get(id);
+        return taskRepository.get(id);
     }
 
     public void delete(Long id) {
-        TaskRepository.remove(id);
+        taskRepository.remove(id);
     }
 
+    public void updateStatus(Long id, Status status) {
+        find(id).setStatus(status);
+    }
 
+    public Task updateTask(Task newTask) {
+        Long key = newTask.getId();
+        Task updateTask = taskRepository.get(key);
 
+        updateTask.setTitle(newTask.getTitle());
+        updateTask.setDescription(newTask.getDescription());
+        updateTask.setDueDate(newTask.getDueDate());
+        updateTask.setAllDay(newTask.getAllDay());
+        updateTask.setStatus(newTask.getStatus());
+
+        taskRepository.put(key, updateTask);
+        return updateTask;
+    }
 
 }

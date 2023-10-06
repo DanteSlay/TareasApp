@@ -1,0 +1,18 @@
+<nav th:fragment="navTop" class="navbar navbar-expand-md navbar-dark bg-dark navbar-fixed-top">
+    <div class="container-fluid">
+        <p class="navbar-brand">Task App</p>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/changeLanguage?lang=es}">Español</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/changeLanguage?lang=en}">English</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item d-flex justify-content-end"><a class="nav-link" th:href="@{/}">Salir</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
