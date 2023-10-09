@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <title th:text="#{task.title.NewTask}">Nueva Tarea</title>
+</head>
+<body>
+    <nav th:replace="fragments/navTop::navTop"></nav>
+    <div class="container text-center">
+      <form method="post" th:action="@{/editTask/submit}"
+                            th:object="${taskDt}">
+          <input type="hidden" th:field="*{id}">
+          <input type="hidden" th:field="*{idUser}">
+        <div class="mb-3 d-inline-flex p-2">
+            <label for="title" class="form-label d-inline-flex p-2" th:text="#{task.form.title}">Titulo</label>
+            <input type="text" class="form-control d-inline-flex p-2" id="title" placeholder="Tarea..." th:field="*{title}"
+                   th:class="${#fields.hasErrors('title')} ? 'is-invalid' : ''">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label" th:text="#{task.form.description}">Descripción</label>
+            <textarea class="form-control" id="description" rows="12" th:field="*{description}"></textarea>
+        </div>
+        <div class="mb-3"
+                th:classappend="${#fields.hasErrors('dueDate')} ? 'has-error'">
+            <label for="dueDate" class="form-label" th:text="#{task.form.dueDate}">Fecha de vencimiento</label>
+            <input class="form-control" type="date" id="dueDate" th:field="*{dueDate}" required>
+            <span th:if="${#fields.hasErrors('dueDate')}" th:errors="*{dueDate}"
+                  class="help-block" style="color: red" id="dueDate-error">Errores</span>
+        </div>
+        <div class="mb-3 input-group">
+            <label class="form-check-label" for="allDay" th:text="#{task.form.allDay}">Todo el día </label>
+            <input class="form-check-input" type="checkbox" id="allDay" name="allDay" th:field="*{allDay}" onchange="horaOn()">
+        </div>
+        <div id="time-input" class="mb-3 input-group" th:style="*{allDay} ? 'display: none' : 'display: block'">
+            <label for="time" th:text="#{task.form.time}">Hora</label>
+            <input type="time" id="time" name="time" th:field="*{time}">
+            <span th:if="${#fields.hasErrors('time')}" th:errors="*{time}"
+                  class="help-block" style="color: red" id="time-error">Errores</span>
+        </div>
+        <div class="mb-3 input-group">
+            <label class="input-group-text" for="status" th:text="#{task.form.status}">Estado</label>
+            <select class="form-select" id="status" th:field="*{status}">
+                <option value="" selected>...</option>
+                <option th:each="status : ${T(com.javi.tareas.entities.Status).values()}"
+                        th:value="${status}" th:text="${status.getText()}"></option>
+            </select>
+        </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <a th:href="@{/viewTask/{id}(id=${taskDt.id})}" class="btn btn-primary">Cancelar</a>
+
+      </form>
+    </div>
+
+    <script>
+        function horaOn() {
+            const allDay = document.getElementById("allDay");
+            const time = document.getElementById("time-input");
+
+            if (allDay.checked) {
+                time.style.display = "none";
+            } else {
+                time.style.display = "block";
+            }
+        }
+    </script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" ></script>
+</body>
+</html>
