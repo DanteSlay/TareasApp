@@ -32,15 +32,14 @@ public class TaskServices {
     }
 
     public List<Task> findAll(Long idUsuario) {
-        return taskRepository.entrySet().stream()
-                .filter(entry -> entry.getValue().getIdUser() == idUsuario)
-                .sorted(Comparator.comparingLong(Map.Entry::getKey))
-                .map(Map.Entry::getValue)
+        return taskRepository.values().stream()
+                .filter(task -> task.getIdUser() == idUsuario)
                 .collect(Collectors.toList());
     }
 
     public Task add(Task t) {
-        taskRepository.put(t.getId(), t.generateId(t));
+        t.generateId(t);
+        taskRepository.put(t.getId(), t);
         return t;
     }
 
@@ -64,10 +63,15 @@ public class TaskServices {
         updateTask.setDescription(newTask.getDescription());
         updateTask.setDueDate(newTask.getDueDate());
         updateTask.setAllDay(newTask.getAllDay());
+        updateTask.setTime(newTask.getTime());
         updateTask.setStatus(newTask.getStatus());
 
         taskRepository.put(key, updateTask);
         return updateTask;
+    }
+
+    public boolean timeNullValid(Task task) {
+        return !task.getAllDay() && task.getTime() == null;
     }
 
 }
