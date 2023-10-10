@@ -2,15 +2,15 @@
   <form th:action="@{/home/sortBy/submit}" method="post">
     <h6 class="mb-3">Ordenar por:</h6>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="sortOption" id="titleRadio" value="title">
+      <input class="form-check-input" type="radio" name="sortOption" id="titleRadio" value="title" th:checked="${session.sortOption == 'title'}">
       <label class="form-check-label" for="titleRadio">Título</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="sortOption" id="dateRadio" value="date">
+      <input class="form-check-input" type="radio" name="sortOption" id="dateRadio" value="date" th:checked="${session.sortOption == 'date'}">
       <label class="form-check-label" for="dateRadio">Fecha</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="sortOption" id="statusRadio" value="status" checked>
+      <input class="form-check-input" type="radio" name="sortOption" id="statusRadio" value="status" th:checked="${session.sortOption == 'status'}" required>
       <label class="form-check-label" for="statusRadio">Estado</label>
     </div>
     <button type="submit" class="btn btn-primary mt-3">Aplicar filtro</button>

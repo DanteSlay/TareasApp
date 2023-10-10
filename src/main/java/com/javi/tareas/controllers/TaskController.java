@@ -36,8 +36,7 @@ public class TaskController {
         userId = id;
         String sortOption = (String) session.getAttribute("sortOption");
         if (sortOption == null) {
-            model.addAttribute("taskList", taskService.sortByStatus(userId));
-            return "index";
+            sortOption = "status";
         }
 
         sortAndAddToModel(sortOption, model);
@@ -114,6 +113,9 @@ public class TaskController {
 
     @PostMapping("/home/sortBy/submit")
     public String sortBy(@RequestParam("sortOption") String sortOption, Model model, HttpSession session) {
+        if (sortOption == null) {
+            sortOption = "status";
+        }
         session.setAttribute("sortOption", sortOption);
 
         sortAndAddToModel(sortOption, model);
