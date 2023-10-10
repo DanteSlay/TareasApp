@@ -7,7 +7,7 @@
     <title th:text="#{user.title.signIn}">Sign In</title>
 </head>
 <body class="d-block" style="margin: 0">
-    <nav th:replace="fragments/navTop::navTop"></nav>
+    <nav th:replace="~{fragments/navTop::navTop}"></nav>
     <div class="container text-center mb-3">
         <form method="post" th:action="@{/logIn/submit}">
             <h1 class="h3 mb-3 fw-normal" th:text="#{user.title.titleLogIn}">Please log in</h1>

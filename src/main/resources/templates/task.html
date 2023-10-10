@@ -7,7 +7,7 @@
     <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<nav th:replace="fragments/navTop::navTop"></nav>
+<nav th:replace="~{fragments/navTop::navTop}"></nav>
     <div class="container mt-4">
         <div class="row">
             <a class="col d-flex justify-content-start display-4" th:href="@{/home/{id}(id = ${taskDt.idUser})}">

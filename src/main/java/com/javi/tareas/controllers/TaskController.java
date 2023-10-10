@@ -3,6 +3,7 @@ package com.javi.tareas.controllers;
 import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
 import com.javi.tareas.services.TaskServices;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,24 @@ public class TaskController {
 
     private Long userId;
 
-    @GetMapping( "/home/{id}")
-    public String home(@PathVariable("id") Long id, Model model) {
+    private void sortAndAddToModel(String sortOption, Model model) {
+        switch (sortOption) {
+            case "title" -> model.addAttribute("taskList", taskService.sortByTitle(userId));
+            case "date" -> model.addAttribute("taskList", taskService.sortByDate(userId));
+            case "status" -> model.addAttribute("taskList", taskService.sortByStatus(userId));
+        }
+    }
+
+    @GetMapping("/home/{id}")
+    public String home(@PathVariable("id") Long id, Model model, HttpSession session) {
         userId = id;
-        model.addAttribute("taskList", taskService.findAll(userId));
+        String sortOption = (String) session.getAttribute("sortOption");
+        if (sortOption == null) {
+            model.addAttribute("taskList", taskService.sortByStatus(userId));
+            return "index";
+        }
+
+        sortAndAddToModel(sortOption, model);
         return "index";
     }
 
@@ -39,6 +54,7 @@ public class TaskController {
         model.addAttribute("taskDt", task);
         return "new-task";
     }
+
     @PostMapping("/newTask/submit")
     public String newTask(@Valid @ModelAttribute("taskDt") Task newTask,
                           BindingResult result) {
@@ -50,11 +66,11 @@ public class TaskController {
                 return "new-task";
             }
         }
-            if (newTask.getStatus() == null) newTask.setStatus(Status.PENDING);
-            if (newTask.getAllDay()) newTask.setTime(null);
+        if (newTask.getStatus() == null) newTask.setStatus(Status.PENDING);
+        if (newTask.getAllDay()) newTask.setTime(null);
 
-            taskService.add(newTask);
-            return "redirect:/home/" + newTask.getIdUser();
+        taskService.add(newTask);
+        return "redirect:/home/" + newTask.getIdUser();
     }
 
     @GetMapping("/viewTask/{id}")
@@ -75,6 +91,7 @@ public class TaskController {
         model.addAttribute("taskDt", t);
         return "edit-task";
     }
+
     @PostMapping("/editTask/submit")
     public String updateTask(@Valid @ModelAttribute("taskDt") Task editTask, BindingResult result) {
         if (result.hasErrors()) {
@@ -89,10 +106,19 @@ public class TaskController {
         return "redirect:/viewTask/" + editTask.getId();
     }
 
-        @PostMapping("home/updateStatus/{id}")
-        public String updateTaskStatus(@PathVariable("id") Long taskId, @RequestParam("status") Status newStatus) {
-            taskService.updateStatus(taskId, newStatus);
-            return "redirect:/home/" + userId;
-        }
+    @PostMapping("/home/updateStatus/{id}")
+    public String updateTaskStatus(@PathVariable("id") Long taskId, @RequestParam("status") Status newStatus) {
+        taskService.updateStatus(taskId, newStatus);
+        return "redirect:/home/" + userId;
+    }
+
+    @PostMapping("/home/sortBy/submit")
+    public String sortBy(@RequestParam("sortOption") String sortOption, Model model, HttpSession session) {
+        session.setAttribute("sortOption", sortOption);
+
+        sortAndAddToModel(sortOption, model);
+
+        return "redirect:/home/" + userId;
+    }
 
 }

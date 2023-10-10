@@ -74,4 +74,25 @@ public class TaskServices {
         return !task.getAllDay() && task.getTime() == null;
     }
 
+    public List<Task> sortByTitle(Long userId) {
+        List<Task> taskList = findAll(userId);
+        taskList.sort(Comparator.comparing(Task::getTitle));
+        return taskList;
+    }
+
+    public List<Task> sortByDate(Long userId) {
+        List<Task> taskList = findAll(userId);
+        taskList.sort(
+                Comparator.comparing(Task::getDueDate, Comparator.nullsFirst(Comparator.naturalOrder()))
+                        .thenComparing(Task::getTime, Comparator.nullsFirst(Comparator.naturalOrder()))
+        );
+        return taskList;
+    }
+
+
+    public List<Task> sortByStatus(Long userId) {
+        List<Task> taskList = findAll(userId);
+        taskList.sort(Comparator.comparing(Task::getStatus));
+        return taskList;
+    }
 }

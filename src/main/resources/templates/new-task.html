@@ -6,7 +6,7 @@
     <title th:text="#{task.title.NewTask}">Nueva Tarea</title>
 </head>
 <body>
-<nav th:replace="fragments/navTop::navTop"></nav>
+<nav th:replace="~{fragments/navTop::navTop}"></nav>
 <div class="container text-center">
     <form method="post" th:action="@{/newTask/submit}"
           th:object="${taskDt}">
