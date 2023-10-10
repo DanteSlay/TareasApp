@@ -18,16 +18,15 @@
       <thead>
         <tr>
           <th th:text="#{task.form.title}">Titulo</th>
-          <th th:text="#{task.form.description}">Descripción</th>
           <th th:text="#{task.form.dueDate}">Vencimiento</th>
           <th th:text="#{task.form.status}">Estado</th>
+          <th th:text="#{task.title.options}" colspan="2">Opciones</th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="task:${taskList}"
             th:class="${task.status.getText() == 'Pendiente'} ? 'table-danger' : (${task.status.getText() == 'En Proceso'} ? 'table-warning' : 'table-success')">
           <td th:text="${task.title}">Titulo</td>
-          <td th:text="${task.description}">Descripción</td>
           <td th:utext="${task.allDay} ? ${task.dueDate} + '<br> Todo el día' : ${task.dueDate} + '<br> ' + ${task.time}">Fecha de vencimiento</td>
           <td>
             <form method="post" th:action="@{updateStatus/{id}(id = ${task.id})}">
@@ -36,7 +35,7 @@
                         th:value="${status}" th:text="${status.getText()}"
                         th:selected="${status == task.status}"></option>
               </select>
-              <button type="submit" class="btn btn-outline-dark btn-sm">Actualizar</button>
+              <button type="submit" class="btn btn-outline-dark btn-sm" th:text="#{task.title.update}">Actualizar</button>
             </form>
           </td>
           <td>
