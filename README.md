@@ -44,7 +44,7 @@ Desde la página de lista de tareas podemos:
 
 ## Acceso al Proyecto
 
-Para poder ejecutar la aplicación podemos descargar desde mi repositorio de GitHub: https://github.com/DanteSlay/TareasApp.git 
+Para poder ejecutar la aplicación debemos descargar los archivos desde mi repositorio de GitHub: https://github.com/DanteSlay/TareasApp.git 
 
 La rama master esta actualizada, pero la rama [v2.0-Stable-Final](https://github.com/DanteSlay/TareasApp/tree/v2.0-Stable-Final)  se compone del proyecto finalizado.
 
@@ -65,4 +65,5 @@ Cabe destacar:
 - Webjars Locator
 - Starter Validation
 - Font-Awesome
+- Maven
 - Pequeñas funciones JavaScript
