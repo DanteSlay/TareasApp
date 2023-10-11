@@ -20,9 +20,11 @@ Esta pequeña aplicación permite la gestión de tareas detalladas, para ello ca
     - El nombre y el email de su usuario debe ser **ÚNICO**
     - La contraseña debe tener entre 8 y 20 caracteres
     
+
 2. Una vez que se inicie sesión cada usuario será redirigido a su pagina de inicio correspondiente dónde podrá gestionar su lista de tareas.
     
     ![index.png](src/main/resources/screenshots/index.png)
+
     
 
 ---
@@ -44,14 +46,14 @@ Desde la página de lista de tareas podemos:
 
 ## Acceso al Proyecto
 
-Para poder ejecutar la aplicación debemos descargar los archivos desde mi repositorio de GitHub: https://github.com/DanteSlay/TareasApp.git 
+Para poder ejecutar la aplicación podemos descargar el proyecto desde mi repositorio de GitHub: https://github.com/DanteSlay/TareasApp.git 
 
-La rama master esta actualizada, pero la rama [v2.0-Stable-Final](https://github.com/DanteSlay/TareasApp/tree/v2.0-Stable-Final)  se compone del proyecto finalizado.
+La rama master contiene el proyecto finalizado
 
 Cabe destacar:
 
 - El archivo pom.xml deberá ser revisado para cargar las dependencias
-- Es posible que se tenga que revisar el File Encoding para que emplee UTF-8
+- Asegurese que el File Encoding emplea UTF-8
 
 ---
 
@@ -65,5 +67,4 @@ Cabe destacar:
 - Webjars Locator
 - Starter Validation
 - Font-Awesome
-- Maven
 - Pequeñas funciones JavaScript
