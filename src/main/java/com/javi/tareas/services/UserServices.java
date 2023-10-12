@@ -80,12 +80,12 @@ public class UserServices {
      * @param password La contraseña que se desea verificar
      * @return Un valor booleano que indica si los datos corresponden a algún usuario del repositorio (true) o no (false)
      */
-    public boolean authenticationFail(String email, String password) {
+    public boolean authenticationSuccess(String email, String password) {
         if (emailExist(email)) {
             User user = get(email);
-            return !passwordCorrect(user, password);
+            return passwordCorrect(user, password);
         }
-        return true;
+        return false;
     }
 
     /**

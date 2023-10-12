@@ -71,7 +71,7 @@ public class UserController {
     @PostMapping("/logIn/submit")
     public String signIn(@RequestParam("email") String email, @RequestParam("password") String password
             , Model model) {
-        if (userService.authenticationFail(email, password)) {
+        if (!userService.authenticationSuccess(email, password)) {
             model.addAttribute("error", "user.authenticationFail.error");
             return "logIn";
         }
