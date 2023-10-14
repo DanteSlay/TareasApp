@@ -32,9 +32,12 @@ Esta pequeña aplicación permite la gestión de tareas detalladas, para ello ca
 ## Funcionalidades
 
 Desde la página de lista de tareas podemos:
-
+- Agregar nuevas tareas:
+    - Ningún campo puede estar vacío.
+    - El título no puede contener más de 50 caracteres.
+    - La fecha será la actual (no puede ser anterior).
+    - Si no sse selecciona estado cargara PENDIENTE por defecto.
 - Aplicar filtros de ordenación que cambiarán la secuencia de las tareas en el listado.
-- Agregar nuevas tareas.
 - Cambiar el estado de cada tarea (Esto hará que su color cambie dependiendo del estado)
 - Eliminar una tarea
 - Visualizar una tarea con todos los detalles, desde aquí también podríamos editar la tarea si asi lo deseamos:
