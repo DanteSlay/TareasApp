@@ -142,7 +142,7 @@ public class TaskController {
      * @param idTask El ID de la tarea que se desea eliminar.
      * @return Redirige al usuario a su página de inicio después de eliminar la tarea.
      */
-    @GetMapping("/delete")
+    @GetMapping("/deleteTask")
     public String delete(@RequestParam("task") Long idTask) {
         taskService.delete(idTask);
         return "redirect:/home/" + userId;
@@ -155,7 +155,7 @@ public class TaskController {
      * @param model  El modelo utilizado para pasar datos a la vista de edición.
      * @return La vista "edit-task", un formulario con los detalles de la tarea que se desea editar.
      */
-    @GetMapping("/edit")
+    @GetMapping("/editTask")
     public String edit(@RequestParam("idTask") Long idTask, Model model) {
         Task t = taskService.find(idTask);
         model.addAttribute("taskDt", t);
