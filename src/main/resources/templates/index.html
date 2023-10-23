@@ -39,12 +39,12 @@
             </form>
           </td>
           <td>
-            <a th:href="@{/delete/{id}(id = ${task.id})}" >
+            <a th:href="@{/delete(task=${task.id})}" >
               <i class="fas fa-solid fa-trash" style="color: #000000;"></i>
             </a>
           </td>
           <td>
-            <a th:href="@{/viewTask/{id}(id = ${task.id})}">
+            <a th:href="@{/viewTask(id = ${task.id})}">
               <i class="fas fa-solid fa-eye" style="color: #000000;"></i>
             </a>
           </td>

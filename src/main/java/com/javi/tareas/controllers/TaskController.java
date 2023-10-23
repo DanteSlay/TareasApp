@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 /**
  * Esta clase maneja las solicitudes relacionadas con la creación, visualización, edición, eliminación y ordenación de tareas.
@@ -129,8 +130,8 @@ public class TaskController {
      * @param model El modelo utilizado para pasar datos a la vista.
      * @return La vista "task" que muestra los detalles de la tarea.
      */
-    @GetMapping("/viewTask/{id}")
-    public String viewTask(@PathVariable("id") Long id, Model model) {
+    @GetMapping("/viewTask")
+    public String viewTask(@RequestParam("id") Long id, Model model) {
         model.addAttribute("taskDt", taskService.find(id));
         return "task";
     }
@@ -141,8 +142,8 @@ public class TaskController {
      * @param idTask El ID de la tarea que se desea eliminar.
      * @return Redirige al usuario a su página de inicio después de eliminar la tarea.
      */
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long idTask) {
+    @GetMapping("/delete")
+    public String delete(@RequestParam("task") Long idTask) {
         taskService.delete(idTask);
         return "redirect:/home/" + userId;
     }
@@ -154,8 +155,8 @@ public class TaskController {
      * @param model  El modelo utilizado para pasar datos a la vista de edición.
      * @return La vista "edit-task", un formulario con los detalles de la tarea que se desea editar.
      */
-    @GetMapping("/viewTask/edit/{id}")
-    public String edit(@PathVariable("id") Long idTask, Model model) {
+    @GetMapping("/edit")
+    public String edit(@RequestParam("idTask") Long idTask, Model model) {
         Task t = taskService.find(idTask);
         model.addAttribute("taskDt", t);
         return "edit-task";
