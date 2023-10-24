@@ -1,16 +1,16 @@
 <div th:fragment="navSide" class="sidenav bg-light p-3">
-  <form th:action="@{/home/sortBy/submit}" method="post">
+  <form th:action="@{/home/sortBy}" method="get">
     <h6 class="mb-3" th:text="#{navSide.sort}">Ordenar por:</h6>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="sortOption" id="titleRadio" value="title" th:checked="${session.sortOption == 'title'}">
+      <input class="form-check-input" type="radio" name="sortOption" id="titleRadio" value="title" th:checked="${sortOption == 'title'}">
       <label class="form-check-label" for="titleRadio" th:text="#{task.form.title}">Título</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="sortOption" id="dateRadio" value="date" th:checked="${session.sortOption == 'date'}">
+      <input class="form-check-input" type="radio" name="sortOption" id="dateRadio" value="date" th:checked="${sortOption == 'date'}">
       <label class="form-check-label" for="dateRadio" th:text="#{task.form.dueDate}">Fecha</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="sortOption" id="statusRadio" value="status" th:checked="${session.sortOption == 'status'}" required>
+      <input class="form-check-input" type="radio" name="sortOption" id="statusRadio" value="status" th:checked="${sortOption == 'status'}" required>
       <label class="form-check-label" for="statusRadio" th:text="#{task.form.status}">Estado</label>
     </div>
     <button type="submit" class="btn btn-primary mt-3" th:text="#{navSide.apply}">Aplicar filtro</button>

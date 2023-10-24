@@ -3,7 +3,7 @@ package com.javi.tareas.controllers;
 import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
 import com.javi.tareas.services.TaskServices;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Optional;
+
 
 /**
  * Esta clase maneja las solicitudes relacionadas con la creación, visualización, edición, eliminación y ordenación de tareas.
@@ -31,6 +31,9 @@ public class TaskController {
      */
     private Long userId;
 
+    private static final int COOKIE_MAX_RANGE = 604800;
+
+
     /**
      * Método privado que se encarga de ordenar una lista de tareas y agregarla a un modelo, según la opción de ordenación especificada.
      *
@@ -45,27 +48,23 @@ public class TaskController {
         }
     }
 
+
     /**
      * Método controlador que se encarga de mostrar la página principal de tareas para un usuario específico.
      *
-     * @param id     El ID del usuario para el cual se mostrarán las tareas.
-     * @param model  El modelo utilizado para pasar datos a la vista.
-     * @param session La sesión HTTP utilizada para almacenar la opción de ordenación actual.
+     * @param id El ID del usuario para el cual se mostrarán las tareas.
+     * @param sortOption Cookie que almacena la opción de ordenación
+     * @param model El modelo utilizado para pasar datos a la vista.
      * @return La vista "index" que muestra las tareas del usuario.
      */
     @GetMapping("/home/{id}")
-    public String home(@PathVariable("id") Long id, Model model, HttpSession session) {
+    public String home(@PathVariable("id") Long id, @CookieValue(name = "sortOption", defaultValue = "status") String sortOption ,Model model) {
         // Establece el ID del usuario actual
         userId = id;
 
-        // Obtenemos la opción de ordenación actual almacenada en la sesión, si aún no hay ninguna almacenada se utilizará "status" por defecto
-        String sortOption = (String) session.getAttribute("sortOption");
-        if (sortOption == null) {
-            sortOption = "status";
-        }
-
         // Ordenamos las tareas y las añadimos al modelo
         sortAndAddToModel(sortOption, model);
+        model.addAttribute("sortOption", sortOption);
         return "index";
     }
 
@@ -207,18 +206,20 @@ public class TaskController {
      * Método controlador que permite al usuario ordenar las tareas en su página de inicio según una opción seleccionada.
      *
      * @param sortOption La opción de ordenación seleccionada por el usuario.
-     * @param model      El modelo utilizado para pasar datos a la vista.
-     * @param session    La sesión del usuario donde se guarda la opción de ordenación.
+     * @param response respuesta HTTP para generar una cookie con la elección de ordenación del usuario
      * @return Redirige al usuario a su página de inicio con las tareas ordenadas.
      */
-    @PostMapping("/home/sortBy/submit")
-    public String sortBy(@RequestParam("sortOption") String sortOption, Model model, HttpSession session) {
+    @GetMapping("/home/sortBy")
+    public String sortBy(@RequestParam("sortOption") String sortOption, HttpServletResponse response) {
         if (sortOption == null) {
             sortOption = "status";
         }
-        session.setAttribute("sortOption", sortOption);
 
-        sortAndAddToModel(sortOption, model);
+        Cookie cookieSort = new Cookie("sortOption", sortOption);
+        cookieSort.setMaxAge(COOKIE_MAX_RANGE);
+        cookieSort.setPath("/home/");
+
+        response.addCookie(cookieSort);
 
         return "redirect:/home/" + userId;
     }
