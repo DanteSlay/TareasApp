@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
@@ -13,7 +14,7 @@
             <h1 class="h3 mb-3 fw-normal" th:text="#{user.title.titleLogIn}">Please log in</h1>
             <div class="form-floating">
                 <span th:if="${error != null}" th:text="#{user.authenticationFail.error}" style="color: red"></span>
-                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                <input type="email" class="form-control" id="email" name="username" placeholder="name@example.com">
                 <label for="email" th:text="#{user.title.email}">Email address</label>
             </div>
             <div class="form-floating">

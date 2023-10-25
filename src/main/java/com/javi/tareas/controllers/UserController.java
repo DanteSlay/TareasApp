@@ -2,6 +2,7 @@ package com.javi.tareas.controllers;
 
 import com.javi.tareas.entities.User;
 import com.javi.tareas.services.UserServices;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,9 @@ public class UserController {
      * @return La vista "LogIn" para iniciar sesión
      */
     @GetMapping({"/", "/logIn"})
-    public String signIn() {
-        return "logIn";
+    public String signIn(HttpSession session) {
+        session.removeAttribute("user");
+        return "logIn/index";
     }
 
     /**
@@ -42,9 +44,11 @@ public class UserController {
      * @return La vista "users" que proporciona información del usuario predeterminado
      */
     @GetMapping("/forgotPassword")
-    public String forgotPasswords(Model model) {
-        model.addAttribute("userDt", userService.get("admin@gmail.com"));
-        return "users";
+    public String forgotPasswords(HttpSession session, Model model) {
+        User userDefault = userService.get("admin@gmail.com");
+        model.addAttribute("userDt", userDefault);
+        session.setAttribute("user", userDefault.getId());
+        return "logIn/users";
     }
 
     /**
@@ -56,7 +60,7 @@ public class UserController {
     @GetMapping("/newUser")
     public String register(Model model) {
         model.addAttribute("newUser", new User());
-        return "register";
+        return "logIn/register";
     }
 
     /**
@@ -69,14 +73,16 @@ public class UserController {
      * @return Si la autenticación es exitosa, redirige al usuario a su página de inicio. Si falla, muestra un mensaje de error en la vista "logIn".
      */
     @PostMapping("/logIn/submit")
-    public String signIn(@RequestParam("email") String email, @RequestParam("password") String password
-            , Model model) {
+    public String signIn(@RequestParam("username") String email, @RequestParam("password") String password
+                        , HttpSession session
+                        , Model model) {
         if (!userService.authenticationSuccess(email, password)) {
             model.addAttribute("error", "user.authenticationFail.error");
-            return "logIn";
+            return "logIn/index";
         }
 
         User user = userService.get(email);
+        session.setAttribute("user", user.getId());
         return "redirect:/home/" + user.getId();
     }
 
@@ -100,7 +106,7 @@ public class UserController {
         }
 
         if (result.hasErrors()) {
-            return "register";
+            return "logIn/register";
         }
 
         userService.add(newUser);

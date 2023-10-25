@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Clase que representa un servicio para gestionar tareas en el sistema
@@ -162,5 +163,11 @@ public class TaskServices {
         List<Task> taskList = findAll(userId);
         taskList.sort(Comparator.comparing(Task::getStatus));
         return taskList;
+    }
+
+    public List<Task> findTask(String titleSearch, Long idUser) {
+        return findAll(idUser).stream()
+                .filter(task -> task.getTitle().equals(titleSearch))
+                .toList();
     }
 }
