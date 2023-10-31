@@ -1,5 +1,6 @@
 package com.javi.tareas.services;
 
+import com.javi.tareas.entities.SearchFilter;
 import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
 import jakarta.annotation.PostConstruct;
@@ -130,8 +131,7 @@ public class TaskServices {
      * @param userId El ID del usuario al que pertenecen las tareas.
      * @return Una lista de tareas ordenadas alfabéticamente por su título.
      */
-    public List<Task> sortByTitle(Long userId) {
-        List<Task> taskList = findAll(userId);
+    public List<Task> sortByTitle(List<Task> taskList) {
         taskList.sort(Comparator.comparing(Task::getTitle));
         return taskList;
     }
@@ -143,8 +143,7 @@ public class TaskServices {
      * @param userId El ID del usuario al que pertenecen las tareas.
      * @return Una lista de tareas ordenadas por fecha y hora, con las tareas sin hora definida al principio.
      */
-    public List<Task> sortByDate(Long userId) {
-        List<Task> taskList = findAll(userId);
+    public List<Task> sortByDate(List<Task> taskList) {
         taskList.sort(
                 Comparator.comparing(Task::getDueDate, Comparator.nullsFirst(Comparator.naturalOrder()))
                         .thenComparing(Task::getTime, Comparator.nullsFirst(Comparator.naturalOrder()))
@@ -159,8 +158,7 @@ public class TaskServices {
      * @param userId El ID del usuario al que pertenecen las tareas
      * @return Una lista de tareas ordenadas por su estado
      */
-    public List<Task> sortByStatus(Long userId) {
-        List<Task> taskList = findAll(userId);
+    public List<Task> sortByStatus(List<Task> taskList) {
         taskList.sort(Comparator.comparing(Task::getStatus));
         return taskList;
     }
@@ -169,5 +167,30 @@ public class TaskServices {
         return findAll(idUser).stream()
                 .filter(task -> task.getTitle().equals(titleSearch))
                 .toList();
+    }
+
+    public List<Task> applyFilters(SearchFilter searchFilter, Long idUser) {
+        List<Task> taskList = findAll(idUser);
+
+        if (searchFilter.getTitle() != null && !searchFilter.getTitle().isEmpty()) {
+            taskList = taskList.stream().filter(task -> task.getTitle().contains(searchFilter.getTitle())).collect(Collectors.toList());
+        }
+
+        if (searchFilter.getStartDueDate() != null) {
+            taskList = taskList.stream().filter(task -> task.getDueDate().isAfter(searchFilter.getStartDueDate()) || task.getDueDate().equals(searchFilter.getStartDueDate())).collect(Collectors.toList());
+        }
+
+        if (searchFilter.getEndDueDate() != null) {
+            taskList = taskList.stream().filter(task -> task.getDueDate().isBefore(searchFilter.getEndDueDate()) ||task.getDueDate().equals(searchFilter.getEndDueDate()) ).collect(Collectors.toList());
+        }
+
+        if (searchFilter.getStatusList() != null && !searchFilter.getStatusList().isEmpty()) {
+            for (Status s : searchFilter.getStatusList()) {
+                if (s.equals(Status.PENDING)) taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
+                if (s.equals(Status.PROGRESS)) taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
+                if (s.equals(Status.COMPLETED)) taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
+            }
+        }
+        return taskList;
     }
 }

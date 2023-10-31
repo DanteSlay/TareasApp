@@ -1,9 +1,11 @@
 package com.javi.tareas.controllers;
 
 import com.javi.tareas.component.SessionValidator;
+import com.javi.tareas.entities.SearchFilter;
 import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
 import com.javi.tareas.services.TaskServices;
+import com.javi.tareas.utilities.Utilities;
 import jakarta.servlet.http.*;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -37,6 +42,7 @@ public class TaskController {
      */
     private Long userId;
 
+
     private static final int COOKIE_MAX_RANGE = 604800;
 
 
@@ -46,11 +52,11 @@ public class TaskController {
      * @param sortOption La opción de ordenación que determina cómo se ordenarán las tareas.
      * @param model      El modelo al que se añadirá la lista de tareas ordenadas.
      */
-    private void sortAndAddToModel(String sortOption, Model model) {
+    private void sortAndAddToModel(String sortOption, List<Task> taskList, Model model) {
         switch (sortOption) {
-            case "title" -> model.addAttribute("taskList", taskService.sortByTitle(userId));
-            case "date" -> model.addAttribute("taskList", taskService.sortByDate(userId));
-            case "status" -> model.addAttribute("taskList", taskService.sortByStatus(userId));
+            case "title" -> model.addAttribute("taskList", taskService.sortByTitle(taskList));
+            case "date" -> model.addAttribute("taskList", taskService.sortByDate(taskList));
+            case "status" -> model.addAttribute("taskList", taskService.sortByStatus(taskList));
         }
     }
 
@@ -65,21 +71,42 @@ public class TaskController {
      */
     @GetMapping("/home/{id}")
     public String home(@PathVariable("id") Long id, @CookieValue(name = "sortOption", defaultValue = "status") String sortOption
-                       ,@RequestParam(name = "search", required = false) String searchTitle
-                        , HttpSession session
-                       , Model model) {
+            , @RequestParam(name = "search", required = false) String searchTitle
+            , HttpSession session
+            , HttpServletRequest request
+            , Model model) {
         // Establece el ID del usuario actual y lo guardamos en una cookie
 
         if (sessionValidator.isValidUserSession(session, id)) {
             userId = id;
-            if (searchTitle == null) {
-                sortAndAddToModel(sortOption, model);
+            Cookie[] cookies = request.getCookies();
+            boolean searchCookiesExist = false;
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().startsWith("search")) {
+                        searchCookiesExist = true;
+                        break;
+                    }
+                }
+            }
+
+            if (searchCookiesExist) {
+                SearchFilter searchFilter = SearchFilter.searchFilterFromCookies(Arrays.asList(cookies));
+
+                model.addAttribute("searchFilter", searchFilter);
+                model.addAttribute("statusList", searchFilter.getStatusList());
+                List<Task> applyFilters = taskService.applyFilters(searchFilter, userId);
+                sortAndAddToModel(sortOption, applyFilters, model);
                 model.addAttribute("sortOption", sortOption);
+                model.addAttribute("filters", true);
 
             } else {
-                List<Task> taskFind = taskService.findTask(searchTitle, userId);
-                model.addAttribute("taskList", taskFind);
+                model.addAttribute("searchFilter", new SearchFilter());
+                sortAndAddToModel(sortOption, taskService.findAll(userId), model);
+                model.addAttribute("sortOption", sortOption);
+                model.addAttribute("filters", false);
             }
+
             return "/taskHome/index";
         } else {
             return "/logIn/index";
@@ -98,7 +125,7 @@ public class TaskController {
      * @return La vista "new-task" que muestra un formulario para añadir la nueva tarea.
      */
     @GetMapping("/newTask")
-    public String newTask(HttpSession session ,Model model) {
+    public String newTask(HttpSession session, Model model) {
         if (sessionValidator.isValidUserSession(session, userId)) {
 
             Task task = Task.builder()
@@ -153,7 +180,7 @@ public class TaskController {
      * @return La vista "task" que muestra los detalles de la tarea.
      */
     @GetMapping("/viewTask")
-    public String viewTask(@RequestParam("id") Long id,HttpSession session, Model model) {
+    public String viewTask(@RequestParam("id") Long id, HttpSession session, Model model) {
         if (sessionValidator.isValidUserSession(session, userId)) {
             model.addAttribute("taskDt", taskService.find(id));
             return "taskHome/task";
@@ -260,15 +287,24 @@ public class TaskController {
         return "redirect:/home/" + userId;
     }
 
-    @GetMapping("/home/searchTask")
-    public String searchTask(@RequestParam("search") String title, HttpServletResponse response) {
-        Cookie cookieTitle = new Cookie("titleFilter", title);
-        cookieTitle.setMaxAge(-1);
-        cookieTitle.setPath("/home");
 
-        response.addCookie(cookieTitle);
+    @PostMapping("/home/searchFilter/submit")
+    public String searchFilter(@ModelAttribute("searchFilter") SearchFilter searchFilter, HttpServletRequest request, HttpServletResponse response) {
+        Utilities.deleteCookiesByTitleSubstring(request, response, "search");
+
+        HashMap<String, String> cookiesSerach = searchFilter.cookiesSerach();
+        for (Map.Entry<String, String> cookie : cookiesSerach.entrySet()) {
+            Cookie cookieFound = new Cookie(cookie.getKey(), cookie.getValue());
+            cookieFound.setMaxAge(COOKIE_MAX_RANGE);
+            cookieFound.setPath("/home");
+            response.addCookie(cookieFound);
+        }
         return "redirect:/home/" + userId;
     }
 
-
+    @GetMapping("/home/deleteFilters")
+    public String deleteFilters(HttpServletRequest request, HttpServletResponse response) {
+        Utilities.deleteCookiesByTitleSubstring(request, response, "search");
+        return "redirect:/home/" + userId;
+    }
 }
