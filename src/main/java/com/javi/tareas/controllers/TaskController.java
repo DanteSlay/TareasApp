@@ -287,7 +287,14 @@ public class TaskController {
         return "redirect:/home/" + userId;
     }
 
-
+    /**
+     * Maneja la solicitud POST para aplicar filtros de búsqueda y establecer cookies correspondientes.
+     *
+     * @param searchFilter El objeto `SearchFilter` con los filtros de búsqueda del usuario.
+     * @param request      El objeto `HttpServletRequest` para acceder a las cookies actuales.
+     * @param response     El objeto `HttpServletResponse` para establecer las cookies de búsqueda.
+     * @return Redirección a la página de inicio de usuario después de aplicar los filtros de búsqueda.
+     */
     @PostMapping("/home/searchFilter/submit")
     public String searchFilter(@ModelAttribute("searchFilter") SearchFilter searchFilter, HttpServletRequest request, HttpServletResponse response) {
         Utilities.deleteCookiesByTitleSubstring(request, response, "search");
@@ -302,6 +309,13 @@ public class TaskController {
         return "redirect:/home/" + userId;
     }
 
+    /**
+     * Maneja la solicitud GET para eliminar los filtros de búsqueda y las cookies relacionadas.
+     *
+     * @param request  El objeto `HttpServletRequest` para acceder a las cookies actuales.
+     * @param response El objeto `HttpServletResponse` para eliminar las cookies de búsqueda.
+     * @return Redirección a la página de inicio de usuario después de eliminar los filtros de búsqueda.
+     */
     @GetMapping("/home/deleteFilters")
     public String deleteFilters(HttpServletRequest request, HttpServletResponse response) {
         Utilities.deleteCookiesByTitleSubstring(request, response, "search");
