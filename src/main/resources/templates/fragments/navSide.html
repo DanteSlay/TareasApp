@@ -1,0 +1,52 @@
+<div th:fragment="navSide" class="sidenav bg-light p-3">
+  <form th:action="@{/home/sortBy}" method="get">
+    <h5 class="mb-3" th:text="#{navSide.sort}">Ordenar por:</h5>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="sortOption" id="titleRadio" value="title" th:checked="${sortOption == 'title'}">
+      <label class="form-check-label" for="titleRadio" th:text="#{task.form.title}">Título</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="sortOption" id="dateRadio" value="date" th:checked="${sortOption == 'date'}">
+      <label class="form-check-label" for="dateRadio" th:text="#{task.form.dueDate}">Fecha</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="sortOption" id="statusRadio" value="status" th:checked="${sortOption == 'status'}" required>
+      <label class="form-check-label" for="statusRadio" th:text="#{task.form.status}">Estado</label>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3" th:text="#{navSide.apply}">Aplicar filtro</button>
+  </form>
+  <hr>
+  <div class="mt-4">
+    <h5 th:text="#{navSide.search}">Filtros de Busqueda</h5>
+
+    <form th:object="${searchFilter}" th:action="@{/home/searchFilter/submit}" method="post" class="mt-3">
+      <div class="form-group mb-3">
+        <label for="title" th:text="#{navSide.search.title}">Título:</label>
+        <input type="text" id="title" class="form-control" th:field="*{title}" th:value="*{title}" />
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="startDueDate" th:text="#{navSide.search.start}">Fecha Inicio:</label>
+        <input type="date" id="startDueDate" class="form-control" th:field="*{startDueDate}" />
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="endDueDate" th:text="#{navSide.search.end}">Fecha Fin:</label>
+        <input type="date" id="endDueDate" class="form-control" th:field="*{endDueDate}" />
+      </div>
+
+      <div class="form-group mb-3">
+        <label th:text="#{navSide.search.status}">Estado:</label>
+        <div th:each="status : ${T(com.javi.tareas.entities.Status).values()}" class="form-check">
+          <input type="checkbox" class="form-check-input" name="statusList" th:value="${status}"
+                 th:checked="${statusList != null && statusList.contains(status)}" />
+          <label class="form-check-label" th:text="${status.getText()}"></label>
+        </div>
+
+      </div>
+
+      <button type="submit" class="btn btn-primary" th:text="#{task.btn.searchTask}">Buscar Tarea</button>
+    </form>
+      <a th:href="@{/home/deleteFilters}"><button th:if="${filters}" class="btn btn-danger" th:text="#{task.btn.clear}">Borrar Filtros</button></a>
+  </div>
+</div>

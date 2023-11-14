@@ -7,14 +7,14 @@
     <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<nav th:replace="fragments/navTop::navTop"></nav>
+<nav th:replace="~{fragments/navTop::navTop}"></nav>
     <div class="container mt-4">
         <div class="row">
             <a class="col d-flex justify-content-start display-4" th:href="@{/home/{id}(id = ${taskDt.idUser})}">
                 <i class="fas fa-solid fa-arrow-left" style="color: #000205;"></i>
             </a>
             <h1 class="col d-flex justify-content-center" th:text="${taskDt.title}">Título</h1>
-            <a class="col d-flex justify-content-end" th:href="@{edit/{id}(id= ${taskDt.id})}">
+            <a class="col d-flex justify-content-end" th:href="@{/editTask(idTask= ${taskDt.id})}">
                 <i class="fas fa-pencil-alt fa-3x" style="color: #000000;"></i>
             </a>
         </div>

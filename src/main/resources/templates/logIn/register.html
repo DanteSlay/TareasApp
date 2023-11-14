@@ -2,13 +2,13 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="#{user.title.new}">Title</title>
     <!-- Font awesome icons -->
     <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body>
-<nav th:replace="fragments/navTop::navTop"></nav>
+<nav th:replace="~{fragments/navTop::navTop}"></nav>
 <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" th:text="#{user.title.newAccount}">Sign up</p>
 
 <form class="mx-1 mx-md-4" method="post"
