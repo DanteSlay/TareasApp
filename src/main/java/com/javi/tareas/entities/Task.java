@@ -1,5 +1,8 @@
 package com.javi.tareas.entities;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,12 +23,14 @@ import java.time.LocalTime;
 @Builder // Genera un patron de diseño para que la construcción del objeto sea más legible
 @AllArgsConstructor // Genera un constructor con todos los campos inicializados
 @NoArgsConstructor // Genera un constructor sin proporcionar valores iniciales para sus campos
+@Entity
 public class Task {
     private static long lastId = 1; // Se inicializa en 1 puesto que se creará una tarea al iniciar la aplicación con este valor
 
     /**
      * El ID único de la tarea
      */
+    @Id @GeneratedValue
     private long id;
 
     /**

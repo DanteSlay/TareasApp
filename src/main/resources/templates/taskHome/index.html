@@ -39,7 +39,7 @@
             </form>
           </td>
           <td>
-            <a th:href="@{/deleteTask(task=${task.id})}" >
+            <a href="#" class="lnkConfirmDelete" data-task-id="${task.id}">
               <i class="fas fa-solid fa-trash" style="color: #000000;"></i>
             </a>
           </td>
@@ -59,8 +59,12 @@
         </tr>
       </tbody>
     </table>
+
+    <div id="modalDelete"></div>
+
   </div>
 </div>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/task.js}"></script>
 </body>
 </html>
