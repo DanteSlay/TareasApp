@@ -1,5 +1,9 @@
 package com.javi.tareas.entities;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,12 +17,15 @@ import lombok.NoArgsConstructor;
 @Builder // Genera un patron de diseño para que la construcción del objeto sea más legible
 @AllArgsConstructor // Genera un constructor con todos los campos inicializados
 @NoArgsConstructor // Genera un constructor sin proporcionar valores iniciales para sus campos
+@Entity
+@Table(name = "user-app")
 public class User {
-    private static long lastId = 1; // Se inicializa en 1 puesto que se creará un usuario al iniciar la aplicación con este valor
 
     /**
      * ID único del usuario
      */
+    @Id
+    @GeneratedValue
     private long id;
 
     /**
@@ -39,14 +46,4 @@ public class User {
     @Size(min = 8, max = 20)
     private String password;
 
-    /**
-     * Genera un ID único para el usuario proporcionado y lo asigna como su ID.
-     *
-     * @param user El usuario al que se le asignará el ID generado.
-     * @return El usuario con su ID único asignado.
-     */
-    public User generateId(User user) {
-        user.setId(++lastId);
-        return user;
-    }
 }

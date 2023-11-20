@@ -131,7 +131,6 @@ public class TaskController {
             Task task = Task.builder()
                     .dueDate(LocalDate.now())
                     .time(LocalTime.now())
-                    .idUser(userId)
                     .build();
             model.addAttribute("taskDt", task);
             return "taskHome/new-task";
@@ -168,8 +167,8 @@ public class TaskController {
         if (newTask.getStatus() == null) newTask.setStatus(Status.PENDING);
         if (newTask.getAllDay()) newTask.setTime(null);
 
-        taskService.add(newTask);
-        return "redirect:/home/" + newTask.getIdUser();
+        taskService.add(newTask, userId);
+        return "redirect:/home/" + userId;
     }
 
     /**
@@ -194,17 +193,25 @@ public class TaskController {
      * @param idTask El ID de la tarea que se desea eliminar.
      * @return Redirige al usuario a su página de inicio después de eliminar la tarea.
      */
+    @GetMapping("/deleteModal")
+    public String deleteModal(@RequestParam("id") Long idTask, HttpSession session, Model model) {
+        if (sessionValidator.isValidUserSession(session, userId)) {
+            Task t = taskService.find(idTask);
+            model.addAttribute("taskDelete", t);
+            return "fragments/deleteModal";
+        }
+        return "logIn/index";
+
+    }
+
     @GetMapping("/deleteTask")
     public String delete(@RequestParam("task") Long idTask, HttpSession session) {
-
         if (sessionValidator.isValidUserSession(session, userId)) {
             taskService.delete(idTask);
             return "redirect:/home/" + userId;
-        } else {
-            return "logIn/index";
         }
+        return "logIn/index";
     }
-
     /**
      * Método controlador que permite la edición de una tarea específica.
      *

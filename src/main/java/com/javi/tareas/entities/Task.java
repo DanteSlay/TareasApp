@@ -1,8 +1,6 @@
 package com.javi.tareas.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.javi.tareas.entities.User;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,7 +24,6 @@ import java.time.LocalTime;
 @NoArgsConstructor // Genera un constructor sin proporcionar valores iniciales para sus campos
 @Entity
 public class Task {
-    private static long lastId = 1; // Se inicializa en 1 puesto que se creará una tarea al iniciar la aplicación con este valor
 
     /**
      * El ID único de la tarea
@@ -51,7 +49,7 @@ public class Task {
      * El patron de la fecha se establecerá en yyyy-MM-dd
      */
     @NotNull(message = "{dueDate.null}")
-    @FutureOrPresent(message = "{dueDate.error}")
+//    @FutureOrPresent(message = "{dueDate.error}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dueDate;
 
@@ -75,16 +73,8 @@ public class Task {
     /**
      * El ID del usuario al que pertenece la tarea
      */
-    private long idUser;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    /**
-     * Genera un ID único para la tarea proporcionada y lo asigna como su ID.
-     *
-     * @param task La tarea al que se le asignará el ID generado.
-     * @return La tarea con su ID único asignado.
-     */
-    public Task generateId(Task task) {
-        task.setId(++lastId);
-        return task;
-    }
 }

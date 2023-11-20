@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="modal(id)" class="modal fade" id="viewTask" data-bs-backdrop="static"
+     tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" th:text="${taskDt.title}">Borrar Tarea</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        </button>
+      </div>
+      <div class="modal-body">
+        <div th:class="${taskDt.status.getText() == 'Pendiente'} ? 'alert alert-danger' : (${taskDt.status.getText() == 'En Proceso'} ? 'alert alert-warning' : 'alert alert-success')" role="alert">
+          <h3 th:text="${taskDt.status.getText()}">Estado</h3>
+        </div>
+        <div class="alert alert-info" role="alert">
+          <h3 th:text="${taskDt.allDay} ?
+                            #{task.form.dueDate} + ' ' + ${taskDt.dueDate} + ' ' + #{task.form.allDay} :
+                            #{task.form.dueDate} + ' ' + ${taskDt.dueDate} + ' ' + ${taskDt.time}">Fecha de Vencimiento</h3>
+        </div>
+        <h3 class="mt-4" th:text="#{task.form.description}">Descripción</h3>
+        <p th:text="${taskDt.description}">Tarea</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

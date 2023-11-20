@@ -3,8 +3,13 @@ package com.javi.tareas.services;
 import com.javi.tareas.entities.SearchFilter;
 import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
+import com.javi.tareas.entities.User;
+import com.javi.tareas.repositories.TaskRepository;
+import com.javi.tareas.repositories.UserRepository;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,30 +22,11 @@ import java.util.stream.Stream;
  */
 @Service // Marcamos esta clase como un componente de servicio
 @Slf4j // Usamos esta anotación para poder incluir "logs" y registrar mensajes de depuración
+@RequiredArgsConstructor
 public class TaskServices {
-    private HashMap<Long, Task> taskRepository = new HashMap<>();
+    private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
-    /**
-     * Método de iniciación que se ejecutará después de la construcción del bean TaskServices
-     * creando una instancia de Task con valores predefinidos
-     * y las agrega al repositorio de tareas 'taskRepository'
-     * Se utiliza para configurar datos iniciales de tareas cuando se inicia la aplicación.
-     */
-    @PostConstruct
-    public void init() {
-            Task t = Task.builder()
-                    .id(1)
-                    .title("Tarea 1")
-                    .description("Primera Tarea")
-                    .dueDate(LocalDate.of(2022, 5, 14))
-                    .allDay(true)
-                    .status(Status.PROGRESS)
-                    .idUser(1)
-                    .build();
-
-        taskRepository.put(t.getId(), t);
-
-    }
 
     /**
      * Busca y devuelve todas las tareas en el repositorio que están asociadas al mismo ID de usuario
@@ -49,9 +35,8 @@ public class TaskServices {
      * @return Una lista de tareas asociadas al ID de usuario proporcionado
      */
     public List<Task> findAll(Long idUsuario) {
-        return taskRepository.values().stream()
-                .filter(task -> task.getIdUser() == idUsuario)
-                .collect(Collectors.toList());
+        User user = userRepository.findById(idUsuario).orElse(null);
+        return taskRepository.findAllByUser(user);
     }
 
     /**
@@ -60,9 +45,10 @@ public class TaskServices {
      * @param t La tarea a la que se le va a generar y asignar un ID único.
      * @return La tarea con su ID generado y agregada al repositorio de tareas.
      */
-    public Task add(Task t) {
-        t.generateId(t);
-        taskRepository.put(t.getId(), t);
+    public Task add(Task t, Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        user.ifPresent(t::setUser);
+        taskRepository.save(t);
         return t;
     }
 
@@ -73,25 +59,28 @@ public class TaskServices {
      * @return La tarea cuyo ID coincide con el proporcionado
      */
     public Task find(Long id) {
-        return taskRepository.get(id);
+        return taskRepository.findById(id).orElse(null);
     }
 
     /**
      * Elimina la tarea del repositorio por su ID
+     *
      * @param id El ID de la tarea que se desea eliminar
      */
     public void delete(Long id) {
-        taskRepository.remove(id);
+        taskRepository.deleteById(id);
     }
 
     /**
      * Busca una tarea por su ID y actualiza su estado por el nuevo estado proporcionado
      *
-     * @param id El ID de la tarea que se desea editar
+     * @param id     El ID de la tarea que se desea editar
      * @param status El nuevo estado que se le asignara a la tarea
      */
     public void updateStatus(Long id, Status status) {
-        find(id).setStatus(status);
+        Task t = find(id);
+        t.setStatus(status);
+        taskRepository.save(t);
     }
 
     /**
@@ -101,18 +90,8 @@ public class TaskServices {
      * @return La tarea actualizada después de la actualización de sus atributos
      */
     public Task updateTask(Task newTask) {
-        Long key = newTask.getId();
-        Task updateTask = taskRepository.get(key);
-
-        updateTask.setTitle(newTask.getTitle());
-        updateTask.setDescription(newTask.getDescription());
-        updateTask.setDueDate(newTask.getDueDate());
-        updateTask.setAllDay(newTask.getAllDay());
-        updateTask.setTime(newTask.getTime());
-        updateTask.setStatus(newTask.getStatus());
-
-        taskRepository.put(key, updateTask);
-        return updateTask;
+        taskRepository.save(newTask);
+        return newTask;
     }
 
     /**
@@ -128,7 +107,6 @@ public class TaskServices {
     /**
      * Selecciona todas las tareas del repositorio que coincidan con el ID del usuario proporcionado y devuelve una lista de tareas ordenadas alfabéticamente por el título
      *
-     * @param userId El ID del usuario al que pertenecen las tareas.
      * @return Una lista de tareas ordenadas alfabéticamente por su título.
      */
     public List<Task> sortByTitle(List<Task> taskList) {
@@ -140,7 +118,6 @@ public class TaskServices {
      * Selecciona todas las tareas del repositorio que coincidan con el ID del usuario proporcionado y devuelve una lista de tareas ordenadas por su fecha y hora
      * Las tareas sin una hora definida se ordenan primero.
      *
-     * @param userId El ID del usuario al que pertenecen las tareas.
      * @return Una lista de tareas ordenadas por fecha y hora, con las tareas sin hora definida al principio.
      */
     public List<Task> sortByDate(List<Task> taskList) {
@@ -155,7 +132,6 @@ public class TaskServices {
     /**
      * Selecciona todas las tareas del repositorio que coincidan con el ID del usuario proporcionado y devuelve una lista de tareas ordenadas por su estado
      *
-     * @param userId El ID del usuario al que pertenecen las tareas
      * @return Una lista de tareas ordenadas por su estado
      */
     public List<Task> sortByStatus(List<Task> taskList) {
@@ -181,14 +157,17 @@ public class TaskServices {
         }
 
         if (searchFilter.getEndDueDate() != null) {
-            taskList = taskList.stream().filter(task -> task.getDueDate().isBefore(searchFilter.getEndDueDate()) ||task.getDueDate().equals(searchFilter.getEndDueDate()) ).collect(Collectors.toList());
+            taskList = taskList.stream().filter(task -> task.getDueDate().isBefore(searchFilter.getEndDueDate()) || task.getDueDate().equals(searchFilter.getEndDueDate())).collect(Collectors.toList());
         }
 
         if (searchFilter.getStatusList() != null && !searchFilter.getStatusList().isEmpty()) {
             for (Status s : searchFilter.getStatusList()) {
-                if (s.equals(Status.PENDING)) taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
-                if (s.equals(Status.PROGRESS)) taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
-                if (s.equals(Status.COMPLETED)) taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
+                if (s.equals(Status.PENDING))
+                    taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
+                if (s.equals(Status.PROGRESS))
+                    taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
+                if (s.equals(Status.COMPLETED))
+                    taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
             }
         }
         return taskList;

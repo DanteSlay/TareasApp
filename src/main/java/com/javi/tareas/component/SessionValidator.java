@@ -2,6 +2,7 @@ package com.javi.tareas.component;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 
 /**
  * Clase para validar la sesión de usuario.
