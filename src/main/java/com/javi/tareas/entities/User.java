@@ -1,9 +1,6 @@
 package com.javi.tareas.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,12 +29,14 @@ public class User {
      * El nombre del usuario. No debe estar en blanco
      */
     @NotBlank(message = "{user.nameBlank.error}")
+    @Column(nullable = false, unique = true)
     private String username;
 
     /**
      * La dirección de correo electrónico del usuario. Debe ser una dirección de correo electrónico válida.
      */
     @Email(message = "{user.email.error}")
+    @Column(nullable = false, unique = true)
     private String email;
 
     /**

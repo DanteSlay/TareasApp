@@ -155,11 +155,11 @@ public class TaskController {
     public String newTask(@Valid @ModelAttribute("taskDt") Task newTask,
                           BindingResult result) {
         if (result.hasErrors()) {
-            return "new-task";
+            return "taskHome/new-task";
         } else {
             if (taskService.timeNullValid(newTask)) {
                 result.rejectValue("time", "time.error");
-                return "new-task";
+                return "taskHome/new-task";
             }
         }
 
@@ -182,7 +182,7 @@ public class TaskController {
     public String viewTask(@RequestParam("id") Long id, HttpSession session, Model model) {
         if (sessionValidator.isValidUserSession(session, userId)) {
             model.addAttribute("taskDt", taskService.find(id));
-            return "taskHome/task";
+            return "fragments/viewModal";
         }
         return "logIn/index";
     }
@@ -255,7 +255,7 @@ public class TaskController {
         }
 
         taskService.updateTask(editTask);
-        return "redirect:/viewTask?id=" + editTask.getId();
+        return "redirect:/home/" + userId;
     }
 
     /**

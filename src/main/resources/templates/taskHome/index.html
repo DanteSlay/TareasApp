@@ -20,7 +20,7 @@
           <th th:text="#{task.form.title}">Titulo</th>
           <th th:text="#{task.form.dueDate}">Vencimiento</th>
           <th th:text="#{task.form.status}">Estado</th>
-          <th th:text="#{task.title.options}" colspan="2">Opciones</th>
+          <th th:text="#{task.title.options}" colspan="3">Opciones</th>
         </tr>
       </thead>
       <tbody>
@@ -44,8 +44,13 @@
             </a>
           </td>
           <td>
-            <a th:href="@{/viewTask(id = ${task.id})}">
+            <a href="#" class="lnkViewTask" data-bs-toggle="modal" data-bs-target="#viewTask" th:data-task-id="${task.id}">
               <i class="fas fa-solid fa-eye" style="color: #000000;"></i>
+            </a>
+          </td>
+          <td>
+            <a th:href="@{/editTask(idTask = ${task.id})}">
+              <i class="fas fa-solid fa-pencil-alt" style="color: #000000;"></i>
             </a>
           </td>
 
