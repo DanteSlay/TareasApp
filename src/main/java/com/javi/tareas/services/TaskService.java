@@ -1,55 +1,39 @@
 package com.javi.tareas.services;
 
-import com.javi.tareas.entities.SearchFilter;
+import com.javi.tareas.entities.FiltrosTask;
+import com.javi.tareas.entities.MyUser;
 import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
-import com.javi.tareas.entities.User;
 import com.javi.tareas.repositories.TaskRepository;
 import com.javi.tareas.repositories.UserRepository;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Clase que representa un servicio para gestionar tareas en el sistema
  */
 @Service // Marcamos esta clase como un componente de servicio
 @Slf4j // Usamos esta anotación para poder incluir "logs" y registrar mensajes de depuración
-@RequiredArgsConstructor
-public class TaskServices {
-    private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
+public class TaskService {
+    @Autowired
+    private TaskRepository taskRepository;
 
 
     /**
      * Busca y devuelve todas las tareas en el repositorio que están asociadas al mismo ID de usuario
      *
-     * @param idUsuario El ID del usuario cuyas tareas se desean buscar
      * @return Una lista de tareas asociadas al ID de usuario proporcionado
      */
-    public List<Task> findAll(Long idUsuario) {
-        User user = userRepository.findById(idUsuario).orElse(null);
-        return taskRepository.findAllByUser(user);
+    public List<Task> findAll(MyUser user) {
+        return taskRepository.findAllByMyUser(user);
     }
 
-    /**
-     * Genera un ID único para la tarea proporcionada y la agrega al repositorio de tareas.
-     *
-     * @param t La tarea a la que se le va a generar y asignar un ID único.
-     * @return La tarea con su ID generado y agregada al repositorio de tareas.
-     */
-    public Task add(Task t, Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        user.ifPresent(t::setUser);
-        taskRepository.save(t);
-        return t;
+    public Task save(Task t) {
+        return taskRepository.save(t);
     }
 
     /**
@@ -58,7 +42,7 @@ public class TaskServices {
      * @param id El ID de la tarea que se desea buscar
      * @return La tarea cuyo ID coincide con el proporcionado
      */
-    public Task find(Long id) {
+    public Task findById(Long id) {
         return taskRepository.findById(id).orElse(null);
     }
 
@@ -78,20 +62,9 @@ public class TaskServices {
      * @param status El nuevo estado que se le asignara a la tarea
      */
     public void updateStatus(Long id, Status status) {
-        Task t = find(id);
+        Task t = findById(id);
         t.setStatus(status);
         taskRepository.save(t);
-    }
-
-    /**
-     * Buscamos una tarea por su ID y actualizamos todos sus atributos a partir de una nueva tarea proporcionada
-     *
-     * @param newTask La tarea con algunos o todos los campos actualizados
-     * @return La tarea actualizada después de la actualización de sus atributos
-     */
-    public Task updateTask(Task newTask) {
-        taskRepository.save(newTask);
-        return newTask;
     }
 
     /**
@@ -139,29 +112,29 @@ public class TaskServices {
         return taskList;
     }
 
-    public List<Task> findTask(String titleSearch, Long idUser) {
-        return findAll(idUser).stream()
+    public List<Task> findTask(String titleSearch, MyUser user) {
+        return findAll(user).stream()
                 .filter(task -> task.getTitle().equals(titleSearch))
                 .toList();
     }
 
-    public List<Task> applyFilters(SearchFilter searchFilter, Long idUser) {
-        List<Task> taskList = findAll(idUser);
+    public List<Task> applyFilters(FiltrosTask filtrosTask, MyUser user) {
+        List<Task> taskList = findAll(user);
 
-        if (searchFilter.getTitle() != null && !searchFilter.getTitle().isEmpty()) {
-            taskList = taskList.stream().filter(task -> task.getTitle().contains(searchFilter.getTitle())).collect(Collectors.toList());
+        if (filtrosTask.getTitle() != null && !filtrosTask.getTitle().isEmpty()) {
+            taskList = taskList.stream().filter(task -> task.getTitle().contains(filtrosTask.getTitle())).collect(Collectors.toList());
         }
 
-        if (searchFilter.getStartDueDate() != null) {
-            taskList = taskList.stream().filter(task -> task.getDueDate().isAfter(searchFilter.getStartDueDate()) || task.getDueDate().equals(searchFilter.getStartDueDate())).collect(Collectors.toList());
+        if (filtrosTask.getStartDueDate() != null) {
+            taskList = taskList.stream().filter(task -> task.getDueDate().isAfter(filtrosTask.getStartDueDate()) || task.getDueDate().equals(filtrosTask.getStartDueDate())).collect(Collectors.toList());
         }
 
-        if (searchFilter.getEndDueDate() != null) {
-            taskList = taskList.stream().filter(task -> task.getDueDate().isBefore(searchFilter.getEndDueDate()) || task.getDueDate().equals(searchFilter.getEndDueDate())).collect(Collectors.toList());
+        if (filtrosTask.getEndDueDate() != null) {
+            taskList = taskList.stream().filter(task -> task.getDueDate().isBefore(filtrosTask.getEndDueDate()) || task.getDueDate().equals(filtrosTask.getEndDueDate())).collect(Collectors.toList());
         }
 
-        if (searchFilter.getStatusList() != null && !searchFilter.getStatusList().isEmpty()) {
-            for (Status s : searchFilter.getStatusList()) {
+        if (filtrosTask.getStatusList() != null && !filtrosTask.getStatusList().isEmpty()) {
+            for (Status s : filtrosTask.getStatusList()) {
                 if (s.equals(Status.PENDING))
                     taskList = taskList.stream().filter(task -> task.getStatus().equals(s)).collect(Collectors.toList());
                 if (s.equals(Status.PROGRESS))

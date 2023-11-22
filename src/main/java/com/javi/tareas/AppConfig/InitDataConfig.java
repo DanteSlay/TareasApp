@@ -1,12 +1,13 @@
-package com.javi.tareas.config;
+package com.javi.tareas.AppConfig;
 
+import com.javi.tareas.entities.MyUser;
 import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
-import com.javi.tareas.entities.User;
-import com.javi.tareas.repositories.TaskRepository;
-import com.javi.tareas.repositories.UserRepository;
+import com.javi.tareas.services.TaskService;
+import com.javi.tareas.services.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
@@ -14,10 +15,10 @@ import java.time.LocalDate;
 @Configuration
 public class InitDataConfig {
     @Autowired
-    private UserRepository userRepository;
-
+    private TaskService taskService;
     @Autowired
-    private TaskRepository taskRepository;
+    private UserService userService;
+
 
     /**
      * Método de iniciación que se ejecutará después de la construcción del bean TaskServices
@@ -27,40 +28,28 @@ public class InitDataConfig {
      */
     @PostConstruct
     public void initTask() {
-        User user = userRepository.findById(1L).orElse(null);
-        if (user == null) {
-            user = User.builder()
+        MyUser myUser = userService.findById(1L);
+        if (myUser == null) {
+            myUser = MyUser.builder()
                     .username("admin")
                     .email("admin@gmail.com")
                     .password("root1234")
+                    .role("ROLE_ADMIN")
                     .build();
-            userRepository.save(user);
+            userService.save(myUser);
         }
-        Task t = taskRepository.findById(1L).orElse(null);
-        if (t == null){
+        Task t = taskService.findById(1L);
+        if (t == null) {
             t = Task.builder()
                     .title("Tarea 1")
                     .description("Primera Tarea")
                     .dueDate(LocalDate.of(2022, 5, 14))
                     .allDay(true)
                     .status(Status.PROGRESS)
-                    .user(user)
+                    .myUser(userService.findById(1L))
                     .build();
-        }else{
-            Long lastId = taskRepository.lastFindId();
-            lastId += 1;
-            t = Task.builder()
-                    .title("Tarea " + lastId)
-                    .description("Primera Tarea")
-                    .dueDate(LocalDate.now())
-                    .allDay(true)
-                    .status(Status.PENDING)
-                    .user(user)
-                    .build();
+            taskService.save(t);
         }
-
-
-        taskRepository.save(t);
 
     }
 }

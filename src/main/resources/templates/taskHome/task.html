@@ -10,7 +10,7 @@
 <nav th:replace="~{fragments/navTop::navTop}"></nav>
     <div class="container mt-4">
         <div class="row">
-            <a class="col d-flex justify-content-start display-4" th:href="@{/home/{id}(id = ${session.user})}">
+            <a class="col d-flex justify-content-start display-4" th:href="@{/home/{id}(id = ${session.myUser})}">
                 <i class="fas fa-solid fa-arrow-left" style="color: #000205;"></i>
             </a>
             <h1 class="col d-flex justify-content-center" th:text="${taskDt.title}">Título</h1>

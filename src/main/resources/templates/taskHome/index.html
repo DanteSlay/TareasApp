@@ -10,7 +10,7 @@
 <nav th:replace="~{fragments/navTop::navTop}"></nav>
 <div class="row">
   <div class="col-md-2">
-    <div th:replace="~{fragments/navSide::navSide}"></div>
+<div th:replace="~{fragments/navSide::navSide}"></div>
   </div>
   <div class="col-md-9 container text-center">
     <h1 style="text-align: center" th:text="#{task.title.List}">Lista de Tareas</h1>
@@ -49,7 +49,7 @@
             </a>
           </td>
           <td>
-            <a th:href="@{/editTask(idTask = ${task.id})}">
+            <a th:href="@{/home/editTask(idTask = ${task.id})}">
               <i class="fas fa-solid fa-pencil-alt" style="color: #000000;"></i>
             </a>
           </td>
@@ -57,7 +57,7 @@
         </tr>
         <tr>
           <td colspan="4" style="text-align: center">
-            <a th:href="@{/newTask}">
+            <a th:href="@{/home/newTask}">
               <button class="btn btn-primary" th:text="#{task.index.newTask}">Nueva Tarea</button>
             </a>
           </td>

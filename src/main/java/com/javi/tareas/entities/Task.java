@@ -1,7 +1,6 @@
 package com.javi.tareas.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import com.javi.tareas.entities.User;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -75,6 +73,6 @@ public class Task {
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
-    private User user;
+    private MyUser myUser;
 
 }

@@ -11,13 +11,12 @@ public class Utilities {
      *
      * @param request        Objeto HttpServletRequest que proporciona las cookies.
      * @param response       Objeto HttpServletResponse para agregar cookies eliminadas.
-     * @param titleSubstring Subcadena que debe coincidir con el inicio del nombre de la cookie.
      */
-    public static void deleteCookiesByTitleSubstring(HttpServletRequest request, HttpServletResponse response, String titleSubstring) {
+    public static void deleteSearchCookies(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().startsWith(titleSubstring)) {
+                if (cookie.getName().startsWith("search")) {
                     cookie.setValue("");
                     cookie.setMaxAge(0);
                     cookie.setPath("/home");
@@ -26,5 +25,6 @@ public class Utilities {
             }
         }
     }
+
 
 }

@@ -1,10 +1,12 @@
 package com.javi.tareas.repositories;
 
-import com.javi.tareas.entities.User;
+import com.javi.tareas.entities.MyUser;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    User findByEmail(String email);
-    User findByEmailAndPassword(String email, String password);
-    User findByUsername(String username);
+@Repository
+public interface UserRepository extends JpaRepository<MyUser, Long> {
+    MyUser findByEmail(String email);
+    MyUser findByEmailAndPassword(String email, String password);
+    MyUser findByUsername(String username);
 }

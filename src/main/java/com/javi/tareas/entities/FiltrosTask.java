@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @Slf4j
-public class SearchFilter {
+public class FiltrosTask {
 
     private String title;
 
@@ -30,7 +30,7 @@ public class SearchFilter {
     /**
      * Constructor de la clase SearchFilter. Inicializa la lista de estados.
      */
-    public SearchFilter() {
+    public FiltrosTask() {
         this.statusList = new ArrayList<>();
     }
 
@@ -65,18 +65,18 @@ public class SearchFilter {
      * @param cookies Lista de cookies con los criterios de búsqueda.
      * @return Un objeto SearchFilter con los criterios recuperados de las cookies.
      */
-    public static SearchFilter searchFilterFromCookies(List<Cookie> cookies) {
-        SearchFilter searchFilter = new SearchFilter();
+    public static FiltrosTask searchFilterFromCookies(List<Cookie> cookies) {
+        FiltrosTask filtrosTask = new FiltrosTask();
         for (Cookie cookie : cookies) {
             switch (cookie.getName()) {
-                case "searchTitle" -> searchFilter.setTitle(cookie.getValue());
-                case "searchStartDate" -> searchFilter.setStartDueDate(LocalDate.parse(cookie.getValue()));
-                case "searchEndDate" -> searchFilter.setEndDueDate(LocalDate.parse(cookie.getValue()));
-                case "searchPending" -> searchFilter.statusList.add(Status.PENDING);
-                case "searchProgress" -> searchFilter.statusList.add(Status.PROGRESS);
-                case "searchCompleted" -> searchFilter.statusList.add(Status.COMPLETED);
+                case "searchTitle" -> filtrosTask.setTitle(cookie.getValue());
+                case "searchStartDate" -> filtrosTask.setStartDueDate(LocalDate.parse(cookie.getValue()));
+                case "searchEndDate" -> filtrosTask.setEndDueDate(LocalDate.parse(cookie.getValue()));
+                case "searchPending" -> filtrosTask.statusList.add(Status.PENDING);
+                case "searchProgress" -> filtrosTask.statusList.add(Status.PROGRESS);
+                case "searchCompleted" -> filtrosTask.statusList.add(Status.COMPLETED);
             }
         }
-        return searchFilter;
+        return filtrosTask;
     }
 }

@@ -8,9 +8,8 @@
 <body>
 <nav th:replace="~{fragments/navTop::navTop}"></nav>
 <div class="container text-center">
-    <form method="post" th:action="@{/newTask/submit}"
+    <form method="post" th:action="@{/home/newTask/submit}"
           th:object="${taskDt}">
-        <input type="hidden" th:field="*{user}">
         <div class="mb-3 d-inline-flex p-2">
             <label for="title" class="form-label d-inline-flex p-2" th:text="#{task.form.title}">Titulo</label>
             <input type="text" class="form-control d-inline-flex p-2" id="title" placeholder="Tarea..." th:field="*{title}"
@@ -47,7 +46,7 @@
             </select>
         </div>
         <button type="submit" class="btn btn-primary" th:text="#{task.form.saveNewTask}">Crear nueva Tarea</button>
-        <a th:href="@{/home/{id}(id = ${session.user})}" class="btn btn-primary" th:text="#{task.title.cancel}">Cancelar</a>
+        <a th:href="@{/home}" class="btn btn-primary" th:text="#{task.title.cancel}">Cancelar</a>
     </form>
 </div>
     <script>
@@ -62,6 +61,6 @@
             }
         }
     </script>
-</body>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" ></script>
+</body>
 </html>
