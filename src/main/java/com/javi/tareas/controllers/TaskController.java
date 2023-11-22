@@ -6,7 +6,6 @@ import com.javi.tareas.entities.Status;
 import com.javi.tareas.entities.Task;
 import com.javi.tareas.services.TaskService;
 import com.javi.tareas.services.UserService;
-import com.javi.tareas.utilities.Utilities;
 import jakarta.servlet.http.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,10 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
