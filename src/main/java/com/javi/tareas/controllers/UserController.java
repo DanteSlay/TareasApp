@@ -18,6 +18,7 @@ import java.util.Map;
  */
 @Slf4j // Anotación que habilita la funcionalidad de registro (logging) en la clase.
 @Controller // Marca esta clase como un controlador de Spring MVC.
+@RequestMapping("/login")
 public class UserController {
     @Autowired // Inyecta una instancia del bean UserServices
     private UserService userService;
@@ -27,7 +28,7 @@ public class UserController {
      *
      * @return La vista "LogIn" para iniciar sesión
      */
-    @GetMapping( "/login")
+    @GetMapping( "")
     public String signIn() {
         return "logIn/index";
     }
@@ -44,7 +45,7 @@ public class UserController {
      * @param model El modelo utilizado para pasar los datos a la vista
      * @return La vista "users" que proporciona información del usuario predeterminado
      */
-    @GetMapping("/login/forgotPassword")
+    @GetMapping("/forgotPassword")
     public String forgotPasswords(HttpSession session, Model model) {
         MyUser myUserDefault = userService.findByEmail("admin@gmail.com");
         model.addAttribute("userDt", myUserDefault);
@@ -58,21 +59,12 @@ public class UserController {
      * @param model El modelo utilizado para pasar datos a la vista
      * @return La vista "register" que contiene un formulario para registrar nuevos usuarios
      */
-    @GetMapping("/login/newUser")
+    @GetMapping("/newUser")
     public String register(Model model) {
-        model.addAttribute("newUser", new MyUser());
+        model.addAttribute("newMyUser", new MyUser());
         return "logIn/register";
     }
 
-    /**
-     * Procesa el formulario de inicio de sesión y autentifica a los usuarios.
-     * Si la autenticación falla, muestra un mensaje de error en la vista.
-     *
-     * @param email    El correo electrónico proporcionado en el formulario de inicio de sesión.
-     * @param password La contraseña proporcionada en el formulario de inicio de sesión.
-     * @param model    El modelo utilizado para pasar datos a la vista.
-     * @return Si la autenticación es exitosa, redirige al usuario a su página de inicio. Si falla, muestra un mensaje de error en la vista "logIn".
-     */
 //    @PostMapping("/login/submit")
 //    public String signIn(@RequestParam("username") String email, @RequestParam("password") String password
 //                        , HttpSession session
@@ -97,7 +89,7 @@ public class UserController {
      * @param result     El resultado de las validaciones que se utiliza para detectar errores.
      * @return Si hay errores de validación, muestra la vista "register". Si el registro es exitoso, redirige al usuario a la vista "logIn".
      */
-    @PostMapping("/login/register/submit")
+    @PostMapping("/register/submit")
     public String signUp(@RequestParam("repeatPassword") String repeatPass, @ModelAttribute("newUser") MyUser newMyUser,
                          BindingResult result) {
         Map<String, String> errors = userService.newUserValidation(newMyUser, repeatPass);
