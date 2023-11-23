@@ -1,6 +1,7 @@
 package com.javi.tareas.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -47,7 +48,6 @@ public class Task {
      * El patron de la fecha se establecerá en yyyy-MM-dd
      */
     @NotNull(message = "{dueDate.null}")
-//    @FutureOrPresent(message = "{dueDate.error}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dueDate;
 

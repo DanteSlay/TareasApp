@@ -29,7 +29,7 @@
           <td th:text="${task.title}">Titulo</td>
           <td th:utext="${task.allDay} ? ${task.dueDate} + '<br> Todo el día' : ${task.dueDate} + '<br> ' + ${task.time}">Fecha de vencimiento</td>
           <td>
-            <form method="post" th:action="@{updateStatus/{id}(id = ${task.id})}">
+            <form method="post" th:action="@{/home/updateStatus/{id}(id = ${task.id})}">
               <select class="form-select-sm" name="status">
                 <option th:each="status : ${T(com.javi.tareas.entities.Status).values()}"
                         th:value="${status}" th:text="${status.getText()}"

@@ -5,7 +5,6 @@ $(document).ready(function () {
         console.log(id)
         $.get("/home/deleteModal?id=" + id, function (data) {
             $('#paraModal').html(data);
-            $('#miModal').modal('show')
         })
     });
 
@@ -15,7 +14,6 @@ $(document).ready(function () {
         console.log(id)
         $.get("/home/viewTask?id=" + id, function (data) {
             $('#paraModal').html(data);
-            $('#viewTask').modal('show')
         })
     });
 

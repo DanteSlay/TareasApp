@@ -10,7 +10,7 @@ import jakarta.servlet.http.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,52 +25,56 @@ import java.util.List;
 
 
 /**
- * Esta clase maneja las solicitudes relacionadas con la creación, visualización, edición, eliminación y ordenación de tareas.
- * Además, gestiona la selección de opciones de ordenación y el cambio de estado de las tareas.
+ * Controlador encargado de manejar las acciones relacionadas con la gestión de tareas en la aplicación.
+ * Aquí se incluyen la creación, visualización, edición, eliminación y ordenación de tareas.
+ * También gestiona la selección de opciones de ordenación y el cambio de estado de las tareas.
  */
 @Slf4j // Anotación que habilita la funcionalidad de registro (logging) en la clase.
-@Controller // Marca esta clase como un controlador de Spring MVC.
-@AllArgsConstructor
-@RequestMapping("/home")
+@Controller // Indica que esta clase es un controlador de Spring MVC
+@AllArgsConstructor // Genera un constructor con todos los argumentos automáticamente.
+@RequestMapping("/home") // Establece la ruta base para todas las solicitudes manejadas por este controlador.
 public class TaskController {
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     private static final int COOKIE_MAX_RANGE = 604800;
 
-
+    /**
+     * Maneja la página principal de tareas, mostrando tareas según filtros y opciones de orden.
+     * Además, presenta la lista de tareas en la página de inicio.
+     */
     @GetMapping("")
     public String home(@CookieValue(name = "sortOption", defaultValue = "status") String sortOption
             , HttpSession session
             , Model model) {
 
-        FiltrosTask filtrosTask = (FiltrosTask) session.getAttribute("filtrosTask");
         List<Task> showTask;
+
+        // Obtiene los filtros de tarea de la sesión
+        FiltrosTask filtrosTask = (FiltrosTask) session.getAttribute("filtrosTask");
         if (filtrosTask == null) {
+            // Si no hay filtros, se crea un nuevo objeto FiltrosTask y se muestran todas las tareas
             model.addAttribute("filtrosTask", new FiltrosTask());
             showTask = taskService.findAll(usuarioAutenticado());
         }else{
+            // Si existen filtros, se aplican para mostrar las tareas filtradas
             model.addAttribute("filtrosTask", filtrosTask);
             model.addAttribute("statusList", filtrosTask.getStatusList());
             showTask = taskService.applyFilters(filtrosTask, usuarioAutenticado());
         }
+
+        // Ordena la lista de tareas y la añade al modelo para mostrar en la vista
         sortListAndAddToModel(sortOption, showTask, model);
+
+        // Añade la opción de orden actual al modelo para reflejarla en la vist
         model.addAttribute("sortOption", sortOption);
+
         return "taskHome/index";
     }
 
     /**
-     * Método controlador que genera una nueva tarea con los siguientes atributos predeterminados:
-     * - ID de usuario: el ID de usuario con el que se inició la vista.
-     * - Fecha de vencimiento: la fecha actual.
-     * - Hora de vencimiento: la hora actual.
-     * Muestra la página para añadir una nueva tarea.
-     *
-     * @param model El modelo utilizado para pasar datos a la vista.
-     * @return La vista "new-task" que muestra un formulario para añadir la nueva tarea.
+     * Muestra un formulario para agregar una nueva tarea con valores predeterminados.
      */
     @GetMapping("/newTask")
     public String newTask(Model model) {
@@ -83,24 +87,20 @@ public class TaskController {
     }
 
     /**
-     * Método controlador que procesa el formulario para crear y agregar una nueva tarea.
-     * Realiza las siguientes acciones:
-     * - Valida la tarea proporcionada mediante anotaciones de validación.
-     * - Si se encuentran errores de validación, regresa a la vista "new-task".
-     * - Si la tarea no tiene un horario definido y se intenta guardar, se rechaza con un error de tiempo.
+     * Procesa el formulario para crear y agregar una nueva tarea al repositorio.
+     * Valida la tarea proporcionada y realiza las siguientes acciones:
+     * - Si hay errores de validación, vuelve a mostrar el formulario de nueva tarea.
+     * - Si la tarea no tiene un horario definido y se intenta guardar, rechaza con un error de tiempo.
      * - Si la validación es exitosa, agrega la tarea al repositorio y redirige al usuario a su página de inicio.
-     *
-     * @param newTask La tarea proporcionada a través del formulario y anotada como válida.
-     * @param result  El resultado de la validación que se utilizará para detectar errores.
-     * @return Si hay errores de validación, retorna la vista "new-task". Si la tarea se guarda exitosamente,
-     * redirige al usuario a su página de inicio.
      */
     @PostMapping("/newTask/submit")
     public String newTask(@Valid @ModelAttribute("taskDt") Task newTask,
                           BindingResult result) {
+        // Verifica si hay errores de validación en la tarea proporcionada
         if (result.hasErrors()) {
             return "taskHome/new-task";
         } else {
+            // Si la tarea no tiene un horario definido y se intenta guardar, rechaza con un error de tiempo
             if (taskService.timeNullValid(newTask)) {
                 result.rejectValue("time", "time.error");
                 return "taskHome/new-task";
@@ -111,30 +111,25 @@ public class TaskController {
         if (newTask.getStatus() == null) newTask.setStatus(Status.PENDING);
         if (newTask.getAllDay()) newTask.setTime(null);
 
+        // Establece el usuario autenticado como propietario de la tarea y la guarda en el repositorio
         newTask.setMyUser(usuarioAutenticado());
         taskService.save(newTask);
+
         return "redirect:/home";
     }
 
     /**
-     * Método controlador que muestra los detalles de una tarea específica.
-     *
-     * @param id    El ID de la tarea que se desea ver.
-     * @param model El modelo utilizado para pasar datos a la vista.
-     * @return La vista "task" que muestra los detalles de la tarea.
+     * Muestra los detalles de una tarea.
      */
     @GetMapping("/viewTask")
     public String viewTask(@RequestParam("id") Long id, Model model) {
             model.addAttribute("taskDt", taskService.findById(id));
-            return "fragments/viewModal";
+            return "fragments/viewTaskModal";
     }
 
     /**
-     * Método controlador que elimina una tarea específica del repositorio de tareas.
-     *
-     * @param idTask El ID de la tarea que se desea eliminar.
-     * @return Redirige al usuario a su página de inicio después de eliminar la tarea.
-     */
+     * Proporciona a la vista el modal que confirma la eliminacion de una tarea.
+    */
     @GetMapping("/deleteModal")
     public String deleteModal(@RequestParam("id") Long idTask, Model model) {
         Task t = taskService.findById(idTask);
@@ -143,17 +138,17 @@ public class TaskController {
 
     }
 
+    /**
+     *Elimina una tarea
+     */
     @GetMapping("/deleteTask")
     public String delete(@RequestParam("task") Long idTask) {
             taskService.delete(idTask);
             return "redirect:/home";
-
     }
+
     /**
-     * Método controlador que permite la edición de una tarea específica.
-     *
-     * @param idTask El ID de la tarea que se desea editar.
-     * @return La vista "edit-task", un formulario con los detalles de la tarea que se desea editar.
+     * Muestra un formulario con los datos de una tarea para editarlos
      */
     @GetMapping("/editTask")
     public String edit(@RequestParam("idTask") Long idTask, Model model) {
@@ -163,20 +158,12 @@ public class TaskController {
     }
 
     /**
-     * Método controlador que procesa el formulario de edición de una tarea y actualiza la tarea correspondiente.
-     * Realiza las siguientes acciones:
-     * - Valida la tarea editada mediante anotaciones de validación.
-     * - Si se encuentran errores de validación, regresa a la vista "edit-task" para corregirlos.
-     * - Si la tarea editada no tiene un horario definido y se intenta guardar, se rechaza con un error de tiempo.
-     * - Si la validación es exitosa, actualiza la tarea en el repositorio y redirige al usuario a la vista de detalles de la tarea.
-     *
-     * @param editTask La tarea editada proporcionada a través del formulario y anotada como válida.
-     * @param result   El resultado de la validación que se utilizará para detectar errores.
-     * @return Si hay errores de validación, retorna la vista "edit-task". Si la tarea se actualiza exitosamente,
-     * redirige al usuario a la vista de detalles de la tarea.
+     * Procesa el formulario de edicion de una tarea.
+     * - Si hay errores de validacion o el tiempo (si se requiere) no está establecido, retorna al formulario con los errores.
+     * - Si no la guarda en la base de datos
      */
     @PostMapping("/editTask/submit")
-    public String updateTask(@Valid @ModelAttribute("taskDt") Task editTask, BindingResult result) {
+    public String updateTask(@RequestParam("id") Long idTask, @Valid @ModelAttribute("taskDt") Task editTask, BindingResult result) {
         if (result.hasErrors()) {
             return "taskHome/edit-task";
         } else {
@@ -185,17 +172,16 @@ public class TaskController {
                 return "taskHome/edit-task";
             }
         }
+        Task taskOriginal = taskService.findById(idTask);
 
-        taskService.save(editTask);
+        // Copiar los campos editables desde editTask a originalTask, excluyendo el ID y el usuario
+        BeanUtils.copyProperties(editTask, taskOriginal, "id", "myUser");
+        taskService.save(taskOriginal);
         return "redirect:/home";
     }
 
     /**
-     * Método controlador que actualiza el estado de una tarea existente en el repositorio y redirige al usuario a su página de inicio.
-     *
-     * @param taskId    El ID de la tarea que se actualizará.
-     * @param newStatus El nuevo estado que se asignará a la tarea.
-     * @return Redirige al usuario a su página de inicio después de la actualización.
+     * Actualiza el estado de la tarea
      */
     @PostMapping("/updateStatus/{id}")
     public String updateTaskStatus(@PathVariable("id") Long taskId, @RequestParam("status") Status newStatus) {
@@ -204,11 +190,7 @@ public class TaskController {
     }
 
     /**
-     * Método controlador que permite al usuario ordenar las tareas en su página de inicio según una opción seleccionada.
-     *
-     * @param sortOption La opción de ordenación seleccionada por el usuario.
-     * @param response   respuesta HTTP para generar una cookie con la elección de ordenación del usuario
-     * @return Redirige al usuario a su página de inicio con las tareas ordenadas.
+     * Obtiene el orden seleccionado por el usuario y crea una cookie con ese valor
      */
     @GetMapping("/sortBy")
     public String sortBy(@RequestParam("sortOption") String sortOption, HttpServletResponse response) {
@@ -226,18 +208,27 @@ public class TaskController {
         return "redirect:/home";
     }
 
+    /**
+     * Guarda los filtros de las tareas en la sesión
+     */
     @PostMapping("/searchFilter/submit")
     public String searchFilter(@ModelAttribute("searchFilter") FiltrosTask filtrosTask, HttpSession session) {
         session.setAttribute("filtrosTask", filtrosTask);
         return "redirect:/home";
     }
 
-    @GetMapping("/deleteFilters")
+    /**
+     * Elimina los filtros de la sesión
+     */
+     @GetMapping("/deleteFilters")
     public String deleteFilters(HttpSession session) {
         session.removeAttribute("filtrosTask");
         return "redirect:/home";
     }
 
+    /**
+     * Retorna el usuario actual
+     */
     private MyUser usuarioAutenticado() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -248,10 +239,8 @@ public class TaskController {
     }
 
     /**
-     * Método privado que se encarga de ordenar una lista de tareas y agregarla a un modelo, según la opción de ordenación especificada.
+     * Ordena la lista de tareas y la agrega a un modelo.
      *
-     * @param sortOption La opción de ordenación que determina cómo se ordenarán las tareas.
-     * @param model      El modelo al que se añadirá la lista de tareas ordenadas.
      */
     private void sortListAndAddToModel(String sortOption, List<Task> taskList, Model model) {
         switch (sortOption) {

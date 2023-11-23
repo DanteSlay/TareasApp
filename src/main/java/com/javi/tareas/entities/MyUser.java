@@ -1,6 +1,8 @@
 package com.javi.tareas.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +29,7 @@ public class MyUser {
     /**
      * El nombre del usuario. No debe estar en blanco
      */
-//    @NotBlank(message = "{user.nameBlank.error}")
+    @NotBlank(message = "{myUser.nameBlank.error}")
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -35,11 +37,9 @@ public class MyUser {
      * La dirección de correo electrónico del usuario. Debe ser una dirección de correo electrónico válida.
      */
     @Column(nullable = false, unique = true)
+    @Email
     private String email;
 
-    /**
-     * La contraseña del usuario. Debe tener entre 8 y 20 caracteres de longitud.
-     */
     private String password;
 
     private String role;

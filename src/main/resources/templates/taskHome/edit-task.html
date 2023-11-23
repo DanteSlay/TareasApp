@@ -8,7 +8,7 @@
 <body>
     <nav th:replace="~{fragments/navTop::navTop}"></nav>
     <div class="container text-center">
-      <form method="post" th:action="@{/home/editTask/submit}"
+      <form method="post" th:action="@{/home/editTask/submit(id = ${taskDt.id})}"
                             th:object="${taskDt}">
         <div class="mb-3 d-inline-flex p-2">
             <label for="title" class="form-label d-inline-flex p-2" th:text="#{task.form.title}">Titulo</label>

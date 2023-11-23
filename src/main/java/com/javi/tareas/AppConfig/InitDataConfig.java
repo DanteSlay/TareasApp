@@ -6,25 +6,24 @@ import com.javi.tareas.entities.Task;
 import com.javi.tareas.services.TaskService;
 import com.javi.tareas.services.UserService;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import lombok.AllArgsConstructor;
+
+
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 
 @Configuration
+@AllArgsConstructor
 public class InitDataConfig {
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private UserService userService;
+    private final TaskService taskService;
+    private final UserService userService;
 
 
     /**
-     * Método de iniciación que se ejecutará después de la construcción del bean TaskServices
-     * creando una instancia de Task con valores predefinidos
-     * y las agrega al repositorio de tareas 'taskRepository'
-     * Se utiliza para configurar datos iniciales de tareas cuando se inicia la aplicación.
+     * Cargamos los datos iniciales.
+     * Si el usuario con ID 1 no existe guarda uno predeterminado en la base de datos.
+     * Busca si la tarea con ID 1 existe, en caso contrario crea una y se la asigna al usuario predeterminado.
      */
     @PostConstruct
     public void initTask() {

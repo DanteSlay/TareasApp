@@ -32,10 +32,10 @@ public class SeguridadConfig {
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home")
+                        .defaultSuccessUrl("/home", true)
                         .permitAll())
                 .logout(out -> out
-                        .logoutSuccessUrl("/login/logout").permitAll());
+                        .logoutUrl("/login/logout").permitAll());
 
         // Para que funcione la consola del h2
         http.csrf(csrf ->
