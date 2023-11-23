@@ -15,7 +15,7 @@ import java.util.Map;
  * Servicio para gestionar usuarios en el sistema
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

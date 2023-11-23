@@ -8,7 +8,7 @@ import com.javi.tareas.services.TaskService;
 import com.javi.tareas.services.UserService;
 import jakarta.servlet.http.*;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Slf4j // Anotación que habilita la funcionalidad de registro (logging) en la clase.
 @Controller // Indica que esta clase es un controlador de Spring MVC
-@AllArgsConstructor // Genera un constructor con todos los argumentos automáticamente.
+@RequiredArgsConstructor // Genera un constructor con todos los argumentos automáticamente.
 @RequestMapping("/home") // Establece la ruta base para todas las solicitudes manejadas por este controlador.
 public class TaskController {
     private final TaskService taskService;
