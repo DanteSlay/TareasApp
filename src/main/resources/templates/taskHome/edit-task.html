@@ -8,10 +8,8 @@
 <body>
     <nav th:replace="~{fragments/navTop::navTop}"></nav>
     <div class="container text-center">
-      <form method="post" th:action="@{/editTask/submit}"
+      <form method="post" th:action="@{/home/editTask/submit(id = ${taskDt.id})}"
                             th:object="${taskDt}">
-          <input type="hidden" th:field="*{id}">
-          <input type="hidden" th:field="*{user}">
         <div class="mb-3 d-inline-flex p-2">
             <label for="title" class="form-label d-inline-flex p-2" th:text="#{task.form.title}">Titulo</label>
             <input type="text" class="form-control d-inline-flex p-2" id="title" placeholder="Tarea..." th:field="*{title}"
@@ -48,7 +46,7 @@
             </select>
         </div>
           <button type="submit" class="btn btn-primary">Guardar</button>
-          <a th:href="@{/viewTask(id=${taskDt.id})}" class="btn btn-primary">Cancelar</a>
+          <a th:href="@{/home}" class="btn btn-primary">Cancelar</a>
 
       </form>
     </div>

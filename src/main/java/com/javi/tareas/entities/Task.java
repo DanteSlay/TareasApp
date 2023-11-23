@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import com.javi.tareas.entities.User;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -49,7 +48,6 @@ public class Task {
      * El patron de la fecha se establecerá en yyyy-MM-dd
      */
     @NotNull(message = "{dueDate.null}")
-//    @FutureOrPresent(message = "{dueDate.error}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dueDate;
 
@@ -75,6 +73,6 @@ public class Task {
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
-    private User user;
+    private MyUser myUser;
 
 }

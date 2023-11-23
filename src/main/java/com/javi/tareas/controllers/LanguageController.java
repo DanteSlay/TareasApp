@@ -14,9 +14,6 @@ public class LanguageController {
     /**
      * Método que se encarga de cambiar el idioma de la aplicación según la selección del usuario (Español O Ingles).
      *
-     * @param lang El idioma seleccionado por el usuario como parámetro de solicitud.
-     * @param request La solicitud HTTP que contiene la información de la sesión actual.
-     * @return Una redirección a la página actual o a la página de inicio, según corresponda.
      */
     @GetMapping("/changeLanguage")
     public String changeLanguage(@RequestParam("lang") String lang, HttpServletRequest request) {
@@ -26,7 +23,7 @@ public class LanguageController {
         // Obtiene la URL de la página anterior (Referer) para redireccionar allí
         String referer = request.getHeader("Referer");
 
-        //Si venimos de un submit erroneo volveremos a la URL del método GET
+        //Si venimos de un submit(PostMapping) volveremos a la URL del método GET
         if (referer.contains("submit")) {
             return "redirect:" + referer.replace("/submit", "");
         }
