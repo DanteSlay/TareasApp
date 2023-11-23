@@ -1,4 +1,4 @@
-package com.javi.tareas.AppConfig;
+package com.javi.tareas.appConfig;
 
 
 import org.springframework.context.MessageSource;

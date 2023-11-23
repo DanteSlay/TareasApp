@@ -1,4 +1,4 @@
-package com.javi.tareas.AppConfig;
+package com.javi.tareas.appConfig;
 
 import com.javi.tareas.entities.MyUser;
 import com.javi.tareas.entities.Status;

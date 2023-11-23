@@ -38,7 +38,7 @@ Desde la página de lista de tareas podemos:
 - Visualizar una tarea con todos los detalles.
 - Editar una tarea.
 - Agregar nuevas tareas:
-    - Solo la descripción y el tiempo(si está marcada la casilla de todo el día) pueden tener valores NULOS.
+    - Solo la descripción y el tiempo(si está marcada la casilla de todo el día) pueden tener valores **NULOS**.
     - El título no puede contener más de 50 caracteres.
     - Si no se selecciona estado, cargara PENDIENTE por defecto.
 ---
