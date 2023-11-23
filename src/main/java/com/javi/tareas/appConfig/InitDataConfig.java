@@ -23,8 +23,8 @@ public class InitDataConfig {
 
     /**
      * Cargamos los datos iniciales.
-     * Si el usuario con ID 1 no existe guarda uno predeterminado en la base de datos.
-     * Busca si la tarea con ID 1 existe, en caso contrario crea una y se la asigna al usuario predeterminado.
+     * Si el Usuario con ID 1 no existe guarda uno predeterminado en la base de datos.
+     * Busca si el Usuario predeterminado tiene alguna Tarea en caso contrario crea una y se la asigna al Usuario predeterminado.
      */
     @PostConstruct
     public void initTask() {
