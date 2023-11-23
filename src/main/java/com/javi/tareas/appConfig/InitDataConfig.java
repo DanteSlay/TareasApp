@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Configuration
 @AllArgsConstructor
@@ -27,19 +28,20 @@ public class InitDataConfig {
      */
     @PostConstruct
     public void initTask() {
-        MyUser myUser = userService.findById(1L);
-        if (myUser == null) {
-            myUser = MyUser.builder()
+        MyUser myUserPredeterminado = userService.findById(1L);
+        if (myUserPredeterminado == null) {
+            myUserPredeterminado = MyUser.builder()
                     .username("admin")
                     .email("admin@gmail.com")
                     .password("root1234")
                     .role("ROLE_ADMIN")
                     .build();
-            userService.save(myUser);
+            userService.save(myUserPredeterminado);
         }
-        Task t = taskService.findById(1L);
-        if (t == null) {
-            t = Task.builder()
+
+        List<Task> tasksUserPredeterminado = taskService.findAll(myUserPredeterminado);
+        if (tasksUserPredeterminado.isEmpty()) {
+            Task tPredeterminada = Task.builder()
                     .title("Tarea 1")
                     .description("Primera Tarea")
                     .dueDate(LocalDate.of(2022, 5, 14))
@@ -47,7 +49,7 @@ public class InitDataConfig {
                     .status(Status.PROGRESS)
                     .myUser(userService.findById(1L))
                     .build();
-            taskService.save(t);
+            taskService.save(tPredeterminada);
         }
 
     }
