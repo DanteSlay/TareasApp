@@ -23,22 +23,18 @@ Esta pequeña aplicación permite la gestión de tareas detalladas, para ello ca
 2. Una vez que se inicie sesión cada usuario será redirigido a su pagina de inicio correspondiente dónde podrá gestionar su lista de tareas.
     
     ![index.png](src/main/resources/screenshots/index.png)
-
     
-
 ---
-
-## Funcionalidades
 
 Desde la página de lista de tareas podemos:
 - Aplicar filtros de ordenación que cambiarán la secuencia de las tareas en el listado (este filtro se guardará en una Cookie).
 - Aplicar filtros de búsqueda (estos filtros se guardarán en la sesión). 
-- Cambiar el estado de cada tarea (Esto hará que su color cambie dependiendo del estado)
-- Eliminar una tarea
+- Cambiar el estado de cada tarea (Esto hará que su color cambie dependiendo del estado).
+- Eliminar una tarea.
 - Visualizar una tarea con todos los detalles.
 - Editar una tarea.
 - Agregar nuevas tareas:
-    - Ningún campo puede estar vacío.
+    - Solo la descripción y el tiempo(si está marcada la casilla de todo el día) pueden tener valores **NULOS**.
     - El título no puede contener más de 50 caracteres.
     - Si no se selecciona estado, cargara PENDIENTE por defecto.
 ---
