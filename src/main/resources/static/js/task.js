@@ -5,6 +5,7 @@ $(document).ready(function () {
         console.log(id)
         $.get("/home/deleteModal?id=" + id, function (data) {
             $('#paraModal').html(data);
+            $('#miModal').modal('show');
         })
     });
 

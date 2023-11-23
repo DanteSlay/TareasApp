@@ -67,7 +67,7 @@ public class TaskController {
         // Ordena la lista de tareas y la añade al modelo para mostrar en la vista
         sortListAndAddToModel(sortOption, showTask, model);
 
-        // Añade la opción de orden actual al modelo para reflejarla en la vist
+        // Añade la opción de orden actual al modelo para reflejarla en la vista
         model.addAttribute("sortOption", sortOption);
 
         return "taskHome/index";

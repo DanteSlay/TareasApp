@@ -47,8 +47,8 @@ La rama master contiene el proyecto finalizado
 
 Cabe destacar:
 
-- El archivo pom.xml deberá ser revisado para cargar las dependencias
-- Asegurese que el File Encoding emplea UTF-8
+- El archivo pom.xml deberá ser revisado para cargar las dependencias correctamente.
+- Asegurese que el File Encoding emplea UTF-8.
 
 ---
 
