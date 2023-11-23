@@ -7,7 +7,7 @@ Esta pequeña aplicación permite la gestión de tareas detalladas, para ello ca
 ## **Contenido**
 
 <aside>
-⚠️ No cuenta con una base de datos, cada vez que se inicie la aplicación tanto tareas como usuarios volverán a valores predeterminados.⚠️
+⚠️ Emplea H2 como base de datos, por lo que cualquier cambio será registrado de forma permanente.⚠️
 
 </aside>
 
@@ -18,7 +18,6 @@ Esta pequeña aplicación permite la gestión de tareas detalladas, para ello ca
     El cliente puede crear otro usuario si así lo desea, para ello deberá tener en cuenta que:
     
     - El nombre y el email de su usuario debe ser **ÚNICO**
-    - La contraseña debe tener entre 8 y 20 caracteres
     
 
 2. Una vez que se inicie sesión cada usuario será redirigido a su pagina de inicio correspondiente dónde podrá gestionar su lista de tareas.
@@ -32,20 +31,17 @@ Esta pequeña aplicación permite la gestión de tareas detalladas, para ello ca
 ## Funcionalidades
 
 Desde la página de lista de tareas podemos:
+- Aplicar filtros de ordenación que cambiarán la secuencia de las tareas en el listado (este filtro se guardará en una Cookie).
+- Aplicar filtros de búsqueda (estos filtros se guardarán en la sesión). 
+- Cambiar el estado de cada tarea (Esto hará que su color cambie dependiendo del estado)
+- Eliminar una tarea
+- Visualizar una tarea con todos los detalles.
+- Editar una tarea.
 - Agregar nuevas tareas:
     - Ningún campo puede estar vacío.
     - El título no puede contener más de 50 caracteres.
-    - La fecha será la actual (no puede ser anterior).
-    - Si no sse selecciona estado cargara PENDIENTE por defecto.
-- Aplicar filtros de ordenación que cambiarán la secuencia de las tareas en el listado.
-- Cambiar el estado de cada tarea (Esto hará que su color cambie dependiendo del estado)
-- Eliminar una tarea
-- Visualizar una tarea con todos los detalles, desde aquí también podríamos editar la tarea si asi lo deseamos:
-    
-    ![edit.png](src/main/resources/screenshots/edit.png)
-    
-    ---
-    
+    - Si no se selecciona estado, cargara PENDIENTE por defecto.
+---
 
 ## Acceso al Proyecto
 
@@ -70,4 +66,7 @@ Cabe destacar:
 - Webjars Locator
 - Starter Validation
 - Font-Awesome
-- Pequeñas funciones JavaScript
+- Pequeñas funciones JavaScript, la mayoría para realizar peticiones AJAX
+- H2 como BB-DD
+- JPA para realizar las Query contra la BB-DD
+- Spring Security
