@@ -24,6 +24,7 @@ public class SeguridadConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
+                        //indicamos las rutas que se pueden mostrar sin hacer login
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/login/**"),
                                 AntPathRequestMatcher.antMatcher("/changeLanguage"),
                                 AntPathRequestMatcher.antMatcher("/webjars/**"),
@@ -32,6 +33,7 @@ public class SeguridadConfig {
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
+                        // Indicamos que despues de hacer login, siempre nos llevará a una URL, asi los ?error/?continue no serán un problema
                         .defaultSuccessUrl("/home", true)
                         .permitAll())
                 .logout(out -> out
