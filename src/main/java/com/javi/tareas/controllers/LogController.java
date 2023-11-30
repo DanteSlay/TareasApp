@@ -5,6 +5,7 @@ import com.javi.tareas.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 @Slf4j
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/login")
 public class LogController {
     private final UserService userService;

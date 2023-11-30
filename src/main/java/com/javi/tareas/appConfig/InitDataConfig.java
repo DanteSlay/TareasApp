@@ -9,13 +9,14 @@ import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class InitDataConfig {
     private final TaskService taskService;
     private final UserService userService;
