@@ -11,14 +11,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -40,6 +38,7 @@ public class TaskController {
 
     private static final int COOKIE_MAX_RANGE = 604800;
 
+
     /**
      * Maneja la página principal de tareas, mostrando tareas según filtros y opciones de orden.
      * Además, presenta la lista de tareas en la página de inicio.
@@ -47,7 +46,8 @@ public class TaskController {
     @GetMapping("")
     public String home(@CookieValue(name = "sortOption", defaultValue = "status") String sortOption
             , HttpSession session
-            , Model model) {
+            , Model model,
+                       Principal principal) {
 
         List<Task> showTask;
 
@@ -56,12 +56,12 @@ public class TaskController {
         if (filtrosTask == null) {
             // Si no hay filtros, se crea un nuevo objeto FiltrosTask y se muestran todas las tareas
             model.addAttribute("filtrosTask", new FiltrosTask());
-            showTask = taskService.findAll(usuarioAutenticado());
+            showTask = taskService.findAll(usuarioAutenticado(principal));
         }else{
             // Si existen filtros, se aplican para mostrar las tareas filtradas
             model.addAttribute("filtrosTask", filtrosTask);
             model.addAttribute("statusList", filtrosTask.getStatusList());
-            showTask = taskService.applyFilters(filtrosTask, usuarioAutenticado());
+            showTask = taskService.applyFilters(filtrosTask, usuarioAutenticado(principal));
         }
 
         // Ordena la lista de tareas y la añade al modelo para mostrar en la vista
@@ -95,7 +95,7 @@ public class TaskController {
      */
     @PostMapping("/newTask/submit")
     public String newTask(@Valid @ModelAttribute("taskDt") Task newTask,
-                          BindingResult result) {
+                          BindingResult result, Principal principal) {
         // Verifica si hay errores de validación en la tarea proporcionada
         if (result.hasErrors()) {
             return "taskHome/new-task";
@@ -112,7 +112,7 @@ public class TaskController {
         if (newTask.getAllDay()) newTask.setTime(null);
 
         // Establece el usuario autenticado como propietario de la tarea y la guarda en el repositorio
-        newTask.setMyUser(usuarioAutenticado());
+        newTask.setMyUser(usuarioAutenticado(principal));
         taskService.save(newTask);
 
         return "redirect:/home";
@@ -229,13 +229,9 @@ public class TaskController {
     /**
      * Retorna el usuario actual
      */
-    private MyUser usuarioAutenticado() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            String username = authentication.getName();
-            return userService.findByUsername(username);
-        }
-        return null;
+    private MyUser usuarioAutenticado(Principal principal) {
+        String username = principal.getName();
+        return userService.findByUsername(username);
     }
 
     /**
